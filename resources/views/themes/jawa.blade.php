@@ -423,5 +423,6 @@
     </main>
 
     @include('themes.partials.engine')
+    @include('themes.partials.butterflies')
 </body>
 </html>

@@ -98,6 +98,14 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Kemewahan klasik bernuansa velvet burgundy & gold, tirai teater megah, chandelier kristal, bingkai oval barok, pemutar musik retro, dan animasi elegan.',
                 'is_active' => true,
             ],
+            [
+                'name' => 'Film Roll Cinema',
+                'slug' => 'film-roll',
+                'category' => 'pernikahan',
+                'accent_color' => '#FAF7EF',
+                'description' => 'Tema sinematik retro bernuansa 35mm film reel, tiket bioskop vintage, bingkai sprocket roll, ulasan festival film, dan animasi proyektor analog.',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($themes as $theme) {

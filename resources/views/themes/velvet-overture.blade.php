@@ -38,16 +38,108 @@
         .font-script    { font-family: 'Alex Brush', cursive; }
         .font-sans      { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
 
-        /* Velvet Curtain Motion */
+        /* ==========================================================
+           THEATRICAL VELVET CURTAIN OPENING ANIMATIONS
+           ========================================================== */
         #section-cover {
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 0.7s;
+            will-change: opacity;
         }
         #section-cover.is-hidden {
-            opacity: 0;
-            transform: translateY(-100%);
-            pointer-events: none;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            visibility: hidden !important;
             display: none !important;
+        }
+
+        /* Curtain Wings (Tirai Kiri & Kanan Beludru Penuh) */
+        .curtain-wing-left {
+            transform: translateX(0) scaleX(1);
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+            will-change: transform;
+        }
+        .curtain-wing-right {
+            transform: translateX(0) scaleX(1);
+            transform-origin: right center;
+            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+            will-change: transform;
+        }
+        .curtains-opened .curtain-wing-left {
+            transform: translateX(-104%) scaleX(0.75);
+        }
+        .curtains-opened .curtain-wing-right {
+            transform: translateX(104%) scaleX(0.75);
+        }
+
+        /* Pelmet / Swag Curtain Atas */
+        .curtain-swag-top {
+            transform: translateY(0);
+            transition: transform 1.25s cubic-bezier(0.77, 0, 0.175, 1);
+            will-change: transform;
+        }
+        .curtains-opened .curtain-swag-top {
+            transform: translateY(-110%);
+        }
+
+        /* Chandelier Ascending Upward */
+        .curtain-chandelier {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            transition: transform 1.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.95s ease;
+            will-change: transform, opacity;
+        }
+        .curtains-opened .curtain-chandelier {
+            transform: translateY(-160px) scale(0.85);
+            opacity: 0;
+            filter: drop-shadow(0 0 35px #E8CF9B);
+        }
+
+        /* Center Content Fade & Scale Dissolve */
+        .cover-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            filter: blur(0px);
+            transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.75s ease,
+                        filter 0.75s ease;
+            will-change: transform, opacity, filter;
+        }
+        .curtains-opened .cover-content {
+            transform: scale(0.92) translateY(-25px);
+            opacity: 0;
+            filter: blur(6px);
+            pointer-events: none;
+        }
+
+        /* Center Stage Light Bloom (Sorotan Lampu Panggung Emas Megah) */
+        .stage-gold-glow {
+            transform: scale(0.7);
+            opacity: 0;
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .curtains-opened .stage-gold-glow {
+            transform: scale(1.9);
+            opacity: 0.95;
+        }
+
+        /* Main Invitation Entry Reveal */
+        main#section-top {
+            transform-origin: top center;
+            transition: transform 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        body:not(.invitation-open) main#section-top {
+            opacity: 0.35;
+            transform: scale(0.96);
+        }
+        body.invitation-open main#section-top {
+            opacity: 1;
+            transform: scale(1);
         }
 
         /* Natural Scroll Reveal */
@@ -191,10 +283,22 @@
           }),
           showMusicToast: false,
           activeTab: 'mempelai',
+          curtainOpened: false,
+          isOpening: false,
           openWithToast() {
-              this.openInvitation();
-              this.showMusicToast = true;
-              setTimeout(() => { this.showMusicToast = false; }, 6000);
+              if (this.isOpening) return;
+              this.isOpening = true;
+              this.playMusic(0);
+
+              // 1. Pemicu terbukanya tirai teater beludru megah
+              this.curtainOpened = true;
+
+              // 2. Waktu animasi tirai tersibak (1.35 detik) lalu panggung utama terbuka mulus
+              setTimeout(() => {
+                  this.openInvitation();
+                  this.showMusicToast = true;
+                  setTimeout(() => { this.showMusicToast = false; }, 6000);
+              }, 1350);
           }
       }"
       x-init="
@@ -216,37 +320,70 @@
          Sesuai Layar 1 Referensi Velvet Overture
          ========================================================= --}}
     <div id="section-cover"
-         :class="isOpen ? 'is-hidden' : ''"
+         :class="{ 'curtains-opened': curtainOpened, 'is-hidden': isOpen }"
          class="fixed inset-0 z-50 h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center bg-[#23060C] text-[#FAF5EE]">
 
         {{-- Background Deep Velvet Lighting --}}
-        <div class="absolute inset-0 bg-gradient-to-b from-[#3D0B16]/90 via-[#22050B] to-[#120205] z-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#3D0B16]/95 via-[#22050B] to-[#120205] z-0"></div>
 
-        {{-- Theater Curtains Left & Right (SVGs with rich velvet drape folds) --}}
-        <div class="absolute inset-y-0 left-0 w-32 sm:w-48 md:w-64 z-10 pointer-events-none opacity-95">
-            <svg class="h-full w-full object-cover" viewBox="0 0 200 800" preserveAspectRatio="none" fill="none">
-                <path d="M0,0 C60,0 120,40 110,250 C100,450 140,650 90,800 L0,800 Z" fill="#4B0F1C"/>
-                <path d="M0,0 C40,0 90,60 70,280 C50,480 85,680 40,800 L0,800 Z" fill="#6B1D2F" opacity="0.8"/>
-                <path d="M0,0 C20,0 60,80 45,300 C30,500 55,700 20,800 L0,800 Z" fill="#8C2B3F" opacity="0.6"/>
-                <path d="M100,0 C120,80 135,180 115,260 C95,350 130,550 95,800" stroke="#C5A059" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
-            </svg>
-        </div>
-        <div class="absolute inset-y-0 right-0 w-32 sm:w-48 md:w-64 z-10 pointer-events-none opacity-95 scale-x-[-1]">
-            <svg class="h-full w-full object-cover" viewBox="0 0 200 800" preserveAspectRatio="none" fill="none">
-                <path d="M0,0 C60,0 120,40 110,250 C100,450 140,650 90,800 L0,800 Z" fill="#4B0F1C"/>
-                <path d="M0,0 C40,0 90,60 70,280 C50,480 85,680 40,800 L0,800 Z" fill="#6B1D2F" opacity="0.8"/>
-                <path d="M0,0 C20,0 60,80 45,300 C30,500 55,700 20,800 L0,800 Z" fill="#8C2B3F" opacity="0.6"/>
-                <path d="M100,0 C120,80 135,180 115,260 C95,350 130,550 95,800" stroke="#C5A059" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
-            </svg>
+        {{-- Golden Stage Light Flare (Bersinar lembut saat tirai tersibak) --}}
+        <div class="stage-gold-glow absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+            <div class="w-96 h-96 sm:w-[540px] sm:h-[540px] rounded-full bg-radial from-[#F4DFB0]/35 via-[#C5A059]/15 to-transparent blur-3xl"></div>
         </div>
 
-        {{-- Top Valance Drapery & Crystal Chandelier --}}
-        <div class="relative z-20 w-full pt-2 flex flex-col items-center">
-            {{-- Top Curtain Swag --}}
-            <div class="w-full h-12 bg-gradient-to-b from-[#4A0E1A] to-transparent opacity-80"></div>
+        {{-- Tirai Kiri Beludru Penuh (Curtain Left Wing) --}}
+        <div class="curtain-wing-left absolute inset-y-0 left-0 w-[55%] z-20 pointer-events-none overflow-hidden shadow-[8px_0_30px_rgba(0,0,0,0.7)]"
+             style="background: linear-gradient(90deg, #1A0408 0%, #350811 18%, #5A1624 40%, #3D0B16 62%, #6B1D2F 82%, #26050C 100%);">
+            <svg class="h-full w-full object-cover opacity-50 mix-blend-overlay" viewBox="0 0 240 800" preserveAspectRatio="none" fill="none">
+                <path d="M0,0 C60,0 90,60 70,250 C50,450 110,650 60,800 L0,800 Z" fill="#8C2B3F"/>
+                <path d="M80,0 C140,0 170,80 150,300 C130,500 190,680 130,800 L80,800 Z" fill="#20040A" opacity="0.8"/>
+                <path d="M160,0 C220,0 240,100 220,350 C200,550 240,700 200,800 L160,800 Z" fill="#8C2B3F" opacity="0.6"/>
+            </svg>
+            {{-- Rumbai & Lis Emas Tepi Pertemuan Tirai --}}
+            <div class="absolute inset-y-0 right-0 w-3.5 bg-gradient-to-r from-transparent via-[#C5A059]/40 to-[#E8CF9B] border-r-2 border-[#E8CF9B] shadow-[2px_0_12px_rgba(232,207,155,0.7)] flex flex-col justify-around py-8 opacity-90">
+                <div class="w-1.5 h-8 rounded-full bg-[#E8CF9B] mx-auto shadow-sm"></div>
+                <div class="w-2 h-14 rounded-full bg-[#C5A059] mx-auto shadow-sm"></div>
+                <div class="w-1.5 h-8 rounded-full bg-[#E8CF9B] mx-auto shadow-sm"></div>
+            </div>
+        </div>
 
-            {{-- Crystal Chandelier (SVG) --}}
-            <div class="animate-candle -mt-4 w-44 sm:w-52 h-36 flex items-center justify-center">
+        {{-- Tirai Kanan Beludru Penuh (Curtain Right Wing) --}}
+        <div class="curtain-wing-right absolute inset-y-0 right-0 w-[55%] z-20 pointer-events-none overflow-hidden shadow-[-8px_0_30px_rgba(0,0,0,0.7)]"
+             style="background: linear-gradient(270deg, #1A0408 0%, #350811 18%, #5A1624 40%, #3D0B16 62%, #6B1D2F 82%, #26050C 100%);">
+            <svg class="h-full w-full object-cover opacity-50 mix-blend-overlay scale-x-[-1]" viewBox="0 0 240 800" preserveAspectRatio="none" fill="none">
+                <path d="M0,0 C60,0 90,60 70,250 C50,450 110,650 60,800 L0,800 Z" fill="#8C2B3F"/>
+                <path d="M80,0 C140,0 170,80 150,300 C130,500 190,680 130,800 L80,800 Z" fill="#20040A" opacity="0.8"/>
+                <path d="M160,0 C220,0 240,100 220,350 C200,550 240,700 200,800 L160,800 Z" fill="#8C2B3F" opacity="0.6"/>
+            </svg>
+            {{-- Rumbai & Lis Emas Tepi Pertemuan Tirai --}}
+            <div class="absolute inset-y-0 left-0 w-3.5 bg-gradient-to-l from-transparent via-[#C5A059]/40 to-[#E8CF9B] border-l-2 border-[#E8CF9B] shadow-[-2px_0_12px_rgba(232,207,155,0.7)] flex flex-col justify-around py-8 opacity-90">
+                <div class="w-1.5 h-8 rounded-full bg-[#E8CF9B] mx-auto shadow-sm"></div>
+                <div class="w-2 h-14 rounded-full bg-[#C5A059] mx-auto shadow-sm"></div>
+                <div class="w-1.5 h-8 rounded-full bg-[#E8CF9B] mx-auto shadow-sm"></div>
+            </div>
+        </div>
+
+        {{-- Top Valance Pelmet Drapery --}}
+        <div class="curtain-swag-top absolute top-0 inset-x-0 h-16 sm:h-20 z-30 pointer-events-none overflow-hidden">
+            <svg viewBox="0 0 800 100" preserveAspectRatio="none" class="w-full h-full text-[#4B0F1C]" fill="currentColor">
+                <defs>
+                    <linearGradient id="valanceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#24040A"/>
+                        <stop offset="60%" stop-color="#551221"/>
+                        <stop offset="100%" stop-color="#6B1D2F"/>
+                    </linearGradient>
+                </defs>
+                <path d="M0,0 L800,0 L800,35 Q700,85 600,35 Q500,85 400,35 Q300,85 200,35 Q100,85 0,35 Z" fill="url(#valanceGrad)"/>
+                <path d="M0,35 Q100,85 200,35 Q300,85 400,35 Q500,85 600,35 Q700,85 800,35" stroke="#C5A059" stroke-width="2.5" fill="none"/>
+                <circle cx="200" cy="37" r="3.5" fill="#E8CF9B"/>
+                <circle cx="400" cy="37" r="3.5" fill="#E8CF9B"/>
+                <circle cx="600" cy="37" r="3.5" fill="#E8CF9B"/>
+            </svg>
+        </div>
+
+        {{-- Crystal Chandelier (Naik ke atas plafon teater saat tirai terbuka) --}}
+        <div class="curtain-chandelier absolute top-1 inset-x-0 mx-auto z-35 flex flex-col items-center pointer-events-none">
+            <div class="animate-candle -mt-2 w-44 sm:w-52 h-36 flex items-center justify-center">
                 <svg viewBox="0 0 160 120" class="w-full h-full text-[#E8CF9B]" fill="currentColor">
                     <!-- Chain & Top Ring -->
                     <line x1="80" y1="0" x2="80" y2="28" stroke="#C5A059" stroke-width="2"/>
@@ -278,7 +415,7 @@
         </div>
 
         {{-- Center Content: Title, Names, Date & Guest Card --}}
-        <div class="relative z-20 my-auto w-full max-w-sm px-6 flex flex-col items-center space-y-5">
+        <div class="cover-content relative z-25 my-auto w-full max-w-sm px-6 flex flex-col items-center space-y-5">
             {{-- Wedding Label --}}
             <div class="flex items-center gap-3">
                 <span class="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#C5A059]"></span>
@@ -307,7 +444,7 @@
             </div>
 
             {{-- Guest Card Box (Parchment & Gold Trim) --}}
-            <div class="w-full max-w-[290px] p-4.5 rounded-2xl bg-[#1A0409]/80 border border-[#C5A059]/40 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-md text-center space-y-1.5 relative overflow-hidden">
+            <div class="w-full max-w-[290px] p-4.5 rounded-2xl bg-[#1A0409]/85 border border-[#C5A059]/40 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md text-center space-y-1.5 relative overflow-hidden">
                 <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#C5A059] to-transparent"></div>
                 <p class="text-[9px] uppercase tracking-[0.25em] text-[#C5A059] font-medium">Kepada Yth. Bapak/Ibu/Saudara/i</p>
                 <p class="font-playfair text-xl font-bold text-[#FAF5EE] truncate pt-0.5">
@@ -325,11 +462,11 @@
         </div>
 
         {{-- Bottom Table Decor & Buka Undangan Button --}}
-        <div class="relative z-20 w-full pb-8 pt-4 flex flex-col items-center space-y-4">
+        <div class="cover-content relative z-25 w-full pb-8 pt-4 flex flex-col items-center space-y-4">
             {{-- Button Buka Undangan --}}
             <button @click="openWithToast()"
                     type="button"
-                    class="group relative inline-flex items-center gap-2.5 px-7 py-3 rounded-full text-xs uppercase tracking-[0.2em] font-cinzel font-semibold bg-gradient-to-r from-[#FAF5EE] via-[#F4EBE0] to-[#E8CF9B] text-[#3D0D17] shadow-[0_8px_30px_rgba(197,160,89,0.4)] border border-[#C5A059] hover:scale-105 active:scale-95 transition-all duration-300 pulse-gold">
+                    class="group relative inline-flex items-center gap-2.5 px-7 py-3 rounded-full text-xs uppercase tracking-[0.2em] font-cinzel font-semibold bg-gradient-to-r from-[#FAF5EE] via-[#F4EBE0] to-[#E8CF9B] text-[#3D0D17] shadow-[0_8px_30px_rgba(197,160,89,0.45)] border border-[#C5A059] hover:scale-105 active:scale-95 transition-all duration-300 pulse-gold">
                 <svg class="w-4 h-4 text-[#6B1D2F] transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
