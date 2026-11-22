@@ -67,8 +67,8 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Invitos Elegan Modern',
-                'slug' => 'invitos',
+                'name' => 'Modern Javanese Elegance',
+                'slug' => 'modern-javanese-elegance',
                 'category' => 'pernikahan',
                 'accent_color' => '#C3A069',
                 'description' => 'Tema pernikahan modern elegan dengan split-screen desktop, ornamen floral Jogja, video motion opening, dan palet gelap mewah.',
@@ -83,11 +83,19 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Minimalist Editorial (Ubay & Luluk)',
-                'slug' => 'ubay-luluk',
+                'name' => 'Minimalist Editorial',
+                'slug' => 'minimalist-editorial',
                 'category' => 'pernikahan',
                 'accent_color' => '#8C7355',
                 'description' => 'Gaya editorial modern & minimalis bernuansa warm linen, tipografi Cormorant Garamond & Inter, timeline Our Story berfoto, serta animasi natural.',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Velvet Overture',
+                'slug' => 'velvet-overture',
+                'category' => 'pernikahan',
+                'accent_color' => '#6B1D2F',
+                'description' => 'Kemewahan klasik bernuansa velvet burgundy & gold, tirai teater megah, chandelier kristal, bingkai oval barok, pemutar musik retro, dan animasi elegan.',
                 'is_active' => true,
             ],
         ];

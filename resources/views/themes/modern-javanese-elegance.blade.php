@@ -35,7 +35,7 @@
         .font-sans-poppins    { font-family: 'Poppins', system-ui, sans-serif; }
         .font-tenor           { font-family: 'Tenor Sans', serif; }
 
-        /* ---- Custom Keyframes dari Invitos Luxee Jogja ---- */
+        /* ---- Custom Keyframes Modern Javanese Elegance ---- */
         @keyframes goyangan {
             0%   { transform: rotate(0deg); }
             28%  { transform: rotate(-14deg); }
@@ -74,7 +74,7 @@
             animation: pulseGlow 3.5s ease-in-out infinite;
         }
 
-        /* Arch Frame Khas Wedding Invitos */
+        /* Arch Frame Khas Wedding */
         .arch-frame {
             border-top-left-radius: 9999px;
             border-top-right-radius: 9999px;
@@ -234,7 +234,7 @@
 
             {{-- Bottom Credit --}}
             <div class="relative z-10 flex items-center justify-between text-xs text-stone-400 font-tenor border-t border-white/10 pt-4">
-                <span>Invitos Luxury Edition</span>
+                <span>Modern Javanese Elegance</span>
                 <span>Exclusive Digital Experience</span>
             </div>
         </aside>
@@ -245,7 +245,7 @@
             <div class="w-full max-w-[430px] min-h-screen bg-[#0E0D0B] shadow-[0_0_60px_rgba(0,0,0,0.9)] border-x border-[#D4AF37]/15 relative overflow-x-hidden">
 
                 {{-- =========================================================
-                     1. COVER SCREEN TERKUNCI (SEPERTI DI INVITOS.NET)
+                     1. COVER SCREEN TERKUNCI
                      ========================================================= --}}
                 <div id="section-cover"
                      :class="isOpen ? 'is-hidden' : ''"
@@ -269,7 +269,7 @@
                         </p>
                     </div>
 
-                    {{-- Foto Mempelai dalam Arch Frame Khas Invitos --}}
+                    {{-- Foto Mempelai dalam Arch Frame --}}
                     <div class="my-auto w-full flex flex-col items-center space-y-4">
                         <div class="arch-frame w-48 h-64 p-1.5 bg-gradient-to-b from-[#D4AF37] via-[#8F7220] to-[#D4AF37]/30 shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative">
                             <div class="w-full h-full arch-frame overflow-hidden bg-stone-900">
@@ -293,7 +293,7 @@
                             </h2>
                         </div>
 
-                        {{-- Kotak Penerima Undangan (Sesuai Invitos: Kepada YTH, ...) --}}
+                        {{-- Kotak Penerima Undangan (Kepada YTH, ...) --}}
                         <div class="w-full max-w-[280px] p-3.5 rounded-2xl bg-white/[0.04] border border-[#D4AF37]/30 shadow-xl backdrop-blur-md text-center">
                             <p class="font-sans-poppins text-[10px] tracking-widest uppercase text-stone-400">Kepada Yth,</p>
                             <p class="font-serif-cormorant text-base font-bold text-[#F0D58A] mt-0.5 truncate">
@@ -331,7 +331,7 @@
 
                     {{-- =========================================================
                          ANIMASI PEMBUKAAN: MOTION VIDEO HD LUXEE JOGJA
-                         (Video Tirai Emas & Gerbang Jogja Pembuka Khas Invitos)
+                         (Video Tirai Emas & Gerbang Jogja Pembuka)
                          ========================================================= --}}
                     <section id="motion-video" class="relative w-full h-dvh overflow-hidden flex flex-col justify-between items-center text-center p-6 bg-black">
                         {{-- Background Video Container --}}
@@ -677,7 +677,7 @@
                             </div>
                         </div>
 
-                        {{-- Form RSVP AJAX Sesuai Format Invitos --}}
+                        {{-- Form RSVP AJAX --}}
                         <form @submit.prevent="submitRsvp('{{ route('invitation.wish', $invitation->slug) }}')" class="p-6 rounded-3xl bg-[#151310] border border-[#D4AF37]/25 shadow-xl mb-10 space-y-4">
                             <div x-show="rsvpSuccessMsg" x-cloak class="p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 text-xs text-center font-medium">
                                 <span x-text="rsvpSuccessMsg"></span>
@@ -812,7 +812,7 @@
 
                         <div class="border-t border-white/10 pt-6 text-[10px] text-stone-500 font-tenor tracking-widest uppercase space-y-1">
                             <p>{{ $invitation->title }}</p>
-                            <p class="text-stone-600">Invitos Digital Wedding System</p>
+                            <p class="text-stone-600">Modern Javanese Elegance Wedding System</p>
                         </div>
                     </footer>
 

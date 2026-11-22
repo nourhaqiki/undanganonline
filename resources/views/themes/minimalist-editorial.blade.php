@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{ $invitation->title }} | The Wedding of {{ $invitation->event_data['primary_name'] ?? 'Ubay' }} &amp; {{ $invitation->event_data['secondary_name'] ?? 'Luluk' }}</title>
+    <title>{{ $invitation->title }} | The Wedding of {{ $invitation->event_data['primary_name'] ?? '' }} &amp; {{ $invitation->event_data['secondary_name'] ?? '' }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Google Fonts: Cormorant Garamond & Inter -->
@@ -81,8 +81,8 @@
         default      => $invitation->category
     };
 
-    $primaryName     = $invitation->event_data['primary_name'] ?? 'Ubay';
-    $secondaryName   = $invitation->event_data['secondary_name'] ?? 'Luluk';
+    $primaryName     = $invitation->event_data['primary_name'] ?? '';
+    $secondaryName   = $invitation->event_data['secondary_name'] ?? '';
     $primaryFullName = $invitation->event_data['primary_full_name'] ?? 'M. Yahya Ubaidillah, S.Kom, M.Kom';
     $secondaryFullName = $invitation->event_data['secondary_full_name'] ?? 'Khofifah Mamluatur Riskiyah, S.M';
     $s1              = $invitation->event_data['session_1'] ?? [];
@@ -94,8 +94,8 @@
     $coverImg        = $invitation->event_data['cover_image'] ?? '';
     $primaryParents  = $invitation->event_data['primary_title_parents'] ?? 'Putra dari Bapak Salamet & Ibu Raudatul Jannah';
     $secondaryParents= $invitation->event_data['secondary_title_parents'] ?? 'Putri dari Bapak Akh. Hidayat MZ & Ibu Sitti Juhairiyah';
-    $primaryIg       = $invitation->event_data['primary_instagram'] ?? 'yahya_ubay';
-    $secondaryIg     = $invitation->event_data['secondary_instagram'] ?? 'luluk_riskiyah';
+    $primaryIg       = $invitation->event_data['primary_instagram'] ?? '';
+    $secondaryIg     = $invitation->event_data['secondary_instagram'] ?? '';
 
     // Tanggal Acara
     $eventDateObj    = !empty($s1['date']) ? \Carbon\Carbon::parse($s1['date']) : now();
@@ -173,7 +173,7 @@
 
     {{-- =========================================================
          1. COVER SCREEN TERKUNCI (#section-cover)
-         Clean Editorial Minimalist Layout khas Ubay & Luluk
+         Clean Editorial Minimalist Layout
          ========================================================= --}}
     <div id="section-cover"
          :class="isOpen ? 'is-hidden' : ''"
