@@ -16,6 +16,7 @@ Route::post('/', [InvitationController::class, 'store'])->name('invitation.store
 Route::get('/sukses/{slug}', [InvitationController::class, 'success'])->name('invitation.success');
 Route::get('/kelola/{slug}/{token}', [InvitationController::class, 'manage'])->name('invitation.manage');
 Route::put('/kelola/{slug}/{token}', [InvitationController::class, 'update'])->name('invitation.update');
+Route::get('/template-tamu', [InvitationController::class, 'downloadGuestTemplate'])->name('guest.template');
 
 // --- HALAMAN PUBLIK UNDANGAN & BUKU TAMU LIVE ---
 Route::get('/u/{slug}', [InvitationController::class, 'show'])->name('invitation.show');

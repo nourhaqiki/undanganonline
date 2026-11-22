@@ -61,6 +61,11 @@
                 <p class="text-base font-bold text-blue-300 mt-1 truncate">
                     {{ !empty($guestName) ? $guestName : 'Tamu Undangan' }}
                 </p>
+                @if(!empty($guestAddress))
+                    <p class="text-xs text-slate-300 mt-1 truncate">
+                        di {{ $guestAddress }}
+                    </p>
+                @endif
             </div>
         </div>
 

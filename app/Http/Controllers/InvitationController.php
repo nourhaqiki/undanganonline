@@ -118,6 +118,15 @@ class InvitationController extends Controller
         // Generate 24-character edit token
         $editToken = Str::random(24);
 
+        // Parse Uploaded Guests (from Excel on Home / Builder)
+        $guests = [];
+        if ($request->filled('guests_json')) {
+            $decoded = json_decode($request->input('guests_json'), true);
+            if (is_array($decoded)) {
+                $guests = $decoded;
+            }
+        }
+
         $eventData = [
             'greeting' => $request->greeting,
             'quote' => $request->quote,
@@ -150,6 +159,7 @@ class InvitationController extends Controller
             'gift_accounts' => $giftAccounts,
             'music_mode' => $request->music_mode ?? 'ambient',
             'music_file' => $musicPath,
+            'guests' => $guests,
         ];
 
         $invitation = Invitation::create([
@@ -160,6 +170,9 @@ class InvitationController extends Controller
             'title' => $request->title,
             'event_data' => $eventData,
         ]);
+
+        // Flash guest data from Excel upload to session for success page download
+        session()->flash('uploaded_guests', json_encode($guests));
 
         return redirect()->route('invitation.success', $invitation->slug);
     }
@@ -362,6 +375,7 @@ class InvitationController extends Controller
         }
 
         $guestName = $request->query('to', '');
+        $guestAddress = $request->query('addr', $request->query('address', ''));
 
         $wishes = $invitation->wishes;
         $wishesData = $wishes->map(fn($w) => [
@@ -383,7 +397,33 @@ class InvitationController extends Controller
         $timeParts = explode(' - ', $session1['time'] ?? '09:00');
         $targetDate = $date . 'T' . ($timeParts[0] ?? '09:00');
 
-        return view($viewName, compact('invitation', 'guestName', 'wishesData', 'initialCounts', 'targetDate'));
+        return view($viewName, compact('invitation', 'guestName', 'guestAddress', 'wishesData', 'initialCounts', 'targetDate'));
+    }
+
+    /**
+     * Download template file Excel / CSV untuk daftar tamu undangan
+     */
+    public function downloadGuestTemplate(Request $request)
+    {
+        $format = strtolower($request->query('format', 'xlsx'));
+        if ($format === 'csv') {
+            $fileName = 'template-daftar-tamu.csv';
+            $downloadName = 'Template-Daftar-Tamu-Undangan.csv';
+            $mime = 'text/csv';
+        } else {
+            $fileName = 'template-daftar-tamu.xlsx';
+            $downloadName = 'Template-Daftar-Tamu-Undangan.xlsx';
+            $mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        }
+
+        $filePath = public_path('templates/' . $fileName);
+        if (!file_exists($filePath)) {
+            abort(404, 'File template tidak ditemukan.');
+        }
+
+        return response()->download($filePath, $downloadName, [
+            'Content-Type' => $mime,
+        ]);
     }
 
     /**

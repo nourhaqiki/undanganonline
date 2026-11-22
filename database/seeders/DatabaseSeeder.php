@@ -66,6 +66,30 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Tata letak putih bersih, slate abu-abu, dan aksen biru modern untuk konferensi, seminar, atau temu bisnis.',
                 'is_active' => true,
             ],
+            [
+                'name' => 'Invitos Elegan Modern',
+                'slug' => 'invitos',
+                'category' => 'pernikahan',
+                'accent_color' => '#C3A069',
+                'description' => 'Tema pernikahan modern elegan dengan split-screen desktop, ornamen floral Jogja, video motion opening, dan palet gelap mewah.',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Mehnikah Terracotta Aesthetic',
+                'slug' => 'mehnikah',
+                'category' => 'pernikahan',
+                'accent_color' => '#9D583D',
+                'description' => 'Nuansa hangat terracotta & linen cream dengan ornamen botanical, timeline Love Story lengkap dengan foto & tanggal, serta countdown elegan.',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Minimalist Editorial (Ubay & Luluk)',
+                'slug' => 'ubay-luluk',
+                'category' => 'pernikahan',
+                'accent_color' => '#8C7355',
+                'description' => 'Gaya editorial modern & minimalis bernuansa warm linen, tipografi Cormorant Garamond & Inter, timeline Our Story berfoto, serta animasi natural.',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($themes as $theme) {

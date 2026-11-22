@@ -10,9 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS v4 & Alpine.js CDN -->
+    <!-- Tailwind CSS v4, Alpine.js CDN & SheetJS (Excel/CSV Parser) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -98,30 +99,7 @@
 
     <!-- Multi-Step Builder Form Section -->
     <section id="builder" class="py-16 px-4 bg-stone-900 border-t border-white/10">
-        <div class="max-w-2xl mx-auto"
-             x-data="{
-                 step: {{ (isset($errors) && $errors->any()) ? (old('step', 1)) : 1 }},
-                 category: '{{ old('category', 'pernikahan') }}',
-                 selectedTheme: '{{ old('theme_slug', 'jawa') }}',
-                 hasSession2: {{ old('session_2_title') ? 'true' : 'false' }},
-                 musicMode: '{{ old('music_mode', 'ambient') }}',
-                 giftAccounts: {{ old('gift_accounts') ? json_encode(old('gift_accounts')) : json_encode([['bank' => 'BCA', 'account_number' => '', 'account_name' => '']]) }},
-                 
-                 addGiftAccount() {
-                     this.giftAccounts.push({ bank: '', account_number: '', account_name: '' });
-                 },
-                 removeGiftAccount(index) {
-                     if (this.giftAccounts.length > 1) {
-                         this.giftAccounts.splice(index, 1);
-                     }
-                 },
-                 nextStep() {
-                     if (this.step < 4) this.step++;
-                 },
-                 prevStep() {
-                     if (this.step > 1) this.step--;
-                 }
-             }">
+        <div class="max-w-2xl mx-auto" x-data="builderApp">
 
             <div class="text-center mb-8">
                 <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Online Builder</span>
@@ -183,6 +161,7 @@
             <form action="{{ route('invitation.store') }}" method="POST" enctype="multipart/form-data" class="bg-stone-950/60 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
                 @csrf
                 <input type="hidden" name="step" :value="step">
+                <input type="hidden" name="guests_json" :value="guestsJson">
 
                 {{-- ==================== LANGKAH 1: KATEGORI & TEMA ==================== --}}
                 <div x-show="step === 1" x-cloak class="space-y-6">
@@ -239,6 +218,87 @@
                                 </div>
                             </label>
                             @endforeach
+                        </div>
+                    </div>
+
+                    <!-- 4. Unggah File Excel Tamu (Di Awal - Setelah Pilih Tema) -->
+                    <div class="pt-5 border-t border-white/10 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">4. Unggah File Excel Tamu (Opsional di Awal)</label>
+                                <p class="text-[11px] text-stone-400">Unggah daftar tamu sekarang agar link undangan personal otomatis siap disebarkan.</p>
+                            </div>
+                            <span x-show="guestsList.length > 0" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                  x-text="guestsList.length + ' Tamu Siap'"></span>
+                        </div>
+
+                        <div @dragover.prevent="isDragging = true"
+                             @dragleave.prevent="isDragging = false"
+                             @drop.prevent="handleGuestDrop($event)"
+                             :class="isDragging ? 'border-amber-400 bg-amber-400/10' : 'border-white/15 bg-stone-900 hover:border-amber-400/50'"
+                             class="p-5 rounded-2xl border-2 border-dashed transition-all text-center space-y-2 cursor-pointer relative">
+
+                            <input type="file"
+                                   accept=".xlsx,.xls,.csv"
+                                   @change="handleGuestFileUpload($event)"
+                                   class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10">
+
+                            <div class="flex items-center justify-center gap-2 text-xs font-semibold text-white">
+                                <span class="w-7 h-7 rounded-full bg-amber-400/10 text-amber-400 flex items-center justify-center text-sm border border-amber-400/20">📁</span>
+                                <span>Pilih atau Tarik File Excel / CSV ke Sini</span>
+                            </div>
+                            <p class="text-[10px] text-stone-400">Mendukung file .xlsx, .xls, .csv (Kolom: Nama Tamu, Alamat, No WA, Catatan)</p>
+                        </div>
+
+                        <!-- Template Links & Status -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                            <span class="text-[11px] text-stone-400" x-text="guestsList.length > 0 ? ('✓ ' + guestsList.length + ' tamu berhasil dimuat!') : 'Belum punya file? Unduh format template:'"></span>
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('guest.template', ['format' => 'xlsx']) }}"
+                                   class="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-emerald-600/80 hover:bg-emerald-500 text-white transition active:scale-95 inline-flex items-center gap-1">
+                                    ⬇ Template .xlsx
+                                </a>
+                                <a href="{{ route('guest.template', ['format' => 'csv']) }}"
+                                   class="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300 border border-white/10 transition active:scale-95 inline-flex items-center gap-1">
+                                    ⬇ Template .csv
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Status Alert -->
+                        <div x-show="uploadStatus" x-cloak class="p-3 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 text-xs flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span x-text="uploadStatus"></span>
+                        </div>
+                        <div x-show="uploadError" x-cloak class="p-3 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span x-text="uploadError"></span>
+                        </div>
+
+                        <!-- Pratinjau Singkat Tamu Terunggah -->
+                        <div x-show="guestsList.length > 0" x-cloak class="p-3 rounded-2xl bg-stone-900 border border-emerald-500/30 space-y-1.5">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-emerald-400 flex items-center gap-1">
+                                    <span>✓</span>
+                                    <span x-text="guestsList.length + ' Tamu Siap Dibuatkan Link Personal'"></span>
+                                </span>
+                                <button type="button" @click="guestsList = []; guestsJson = '[]'; uploadStatus = ''" class="text-stone-400 hover:text-red-400 text-[10px] underline">
+                                    Hapus
+                                </button>
+                            </div>
+                            <div class="max-h-24 overflow-y-auto space-y-1 pr-1 text-[11px]">
+                                <template x-for="(g, idx) in guestsList.slice(0, 5)" :key="idx">
+                                    <div class="px-2 py-1 rounded-lg bg-stone-950 border border-white/5 flex items-center justify-between">
+                                        <span class="font-medium text-white truncate" x-text="(idx + 1) + '. ' + g.name"></span>
+                                        <span class="text-[10px] text-stone-400 shrink-0" x-text="g.address ? 'di ' + g.address : ''"></span>
+                                    </div>
+                                </template>
+                                <p x-show="guestsList.length > 5" class="text-[10px] text-stone-500 text-center" x-text="'+ ' + (guestsList.length - 5) + ' tamu lainnya...'"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -398,6 +458,91 @@
 
                 {{-- ==================== LANGKAH 4: GALERI, KADO & MUSIK ==================== --}}
                 <div x-show="step === 4" x-cloak class="space-y-6">
+                    <!-- Unggah Daftar Tamu Excel / CSV (Sebelum Upload Foto Sampul) -->
+                    <div class="p-5 rounded-2xl bg-stone-900 border border-white/10 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">Unggah File Excel Tamu Undangan</label>
+                                <p class="text-[11px] text-stone-400">Unggah file Excel daftar tamu. Link personal akan otomatis di-generate setelah tombol Buat Undangan ditekan.</p>
+                            </div>
+                            <span x-show="guestsList.length > 0" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                  x-text="guestsList.length + ' Tamu'"></span>
+                        </div>
+
+                        <div @dragover.prevent="isDragging = true"
+                             @dragleave.prevent="isDragging = false"
+                             @drop.prevent="handleGuestDrop($event)"
+                             :class="isDragging ? 'border-amber-400 bg-amber-400/10' : 'border-white/15 bg-stone-950/60 hover:border-amber-400/50'"
+                             class="p-6 rounded-2xl border-2 border-dashed transition-all text-center space-y-2.5 cursor-pointer relative">
+
+                            <input type="file"
+                                   accept=".xlsx,.xls,.csv"
+                                   @change="handleGuestFileUpload($event)"
+                                   class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10">
+
+                            <div class="w-10 h-10 rounded-full bg-amber-400/10 text-amber-400 flex items-center justify-center mx-auto text-lg border border-amber-400/20">
+                                📁
+                            </div>
+
+                            <div class="space-y-0.5">
+                                <p class="text-xs sm:text-sm font-semibold text-white">Tarik &amp; lepas file Excel / CSV ke sini</p>
+                                <p class="text-[11px] text-stone-400">Atau <span class="text-amber-400 font-semibold underline">klik untuk memilih file</span> dari perangkat Anda</p>
+                                <p class="text-[10px] text-stone-500">Kolom yang dibaca: Nama Tamu, Alamat / Kota, No WhatsApp, Catatan</p>
+                            </div>
+                        </div>
+
+                        <!-- Template Download & Status -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                            <span class="text-[11px] text-stone-400" x-text="guestsList.length > 0 ? ('✓ ' + guestsList.length + ' tamu berhasil terdeteksi') : 'Unduh contoh template jika belum memiliki file:'"></span>
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('guest.template', ['format' => 'xlsx']) }}"
+                                   class="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-emerald-600/80 hover:bg-emerald-500 text-white transition active:scale-95 inline-flex items-center gap-1">
+                                    ⬇ Template .xlsx
+                                </a>
+                                <a href="{{ route('guest.template', ['format' => 'csv']) }}"
+                                   class="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300 border border-white/10 transition active:scale-95 inline-flex items-center gap-1">
+                                    ⬇ Template .csv
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Notifikasi Alert -->
+                        <div x-show="uploadStatus" x-cloak class="p-3 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 text-xs flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span x-text="uploadStatus"></span>
+                        </div>
+                        <div x-show="uploadError" x-cloak class="p-3 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span x-text="uploadError"></span>
+                        </div>
+
+                        <!-- Pratinjau Daftar Tamu -->
+                        <div x-show="guestsList.length > 0" x-cloak class="p-3.5 rounded-2xl bg-stone-950 border border-emerald-500/30 space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                                    <span>✓</span>
+                                    <span x-text="guestsList.length + ' Tamu Siap Dibuatkan Link Personal:'"></span>
+                                </span>
+                                <button type="button" @click="guestsList = []; guestsJson = '[]'; uploadStatus = ''" class="text-stone-400 hover:text-red-400 text-[10px] underline">
+                                    Hapus
+                                </button>
+                            </div>
+                            <div class="max-h-32 overflow-y-auto space-y-1 pr-1 text-[11px]">
+                                <template x-for="(g, idx) in guestsList.slice(0, 10)" :key="idx">
+                                    <div class="px-2.5 py-1.5 rounded-lg bg-stone-900 border border-white/5 flex items-center justify-between">
+                                        <span class="font-medium text-white truncate" x-text="(idx + 1) + '. ' + g.name"></span>
+                                        <span class="text-[10px] text-stone-400 shrink-0" x-text="g.address ? 'di ' + g.address : ''"></span>
+                                    </div>
+                                </template>
+                                <p x-show="guestsList.length > 10" class="text-[10px] text-stone-500 text-center pt-1" x-text="'+ ' + (guestsList.length - 10) + ' tamu lainnya...'"></p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Upload Sampul & Galeri -->
                     <div class="space-y-4">
                         <div>
@@ -503,5 +648,115 @@
     <footer class="py-8 px-4 text-center text-xs text-stone-500 border-t border-white/10 bg-stone-950">
         <p>&copy; {{ date('Y') }} Undangan Online. Seluruh hak cipta dilindungi.</p>
     </footer>
+    <!-- Alpine Component Script -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('builderApp', () => ({
+                step: {{ (isset($errors) && $errors->any()) ? (old('step', 1)) : 1 }},
+                category: '{{ old('category', 'pernikahan') }}',
+                selectedTheme: '{{ old('theme_slug', 'jawa') }}',
+                hasSession2: {{ old('session_2_title') ? 'true' : 'false' }},
+                musicMode: '{{ old('music_mode', 'ambient') }}',
+                giftAccounts: {!! old('gift_accounts') ? json_encode(old('gift_accounts')) : json_encode([['bank' => 'BCA', 'account_number' => '', 'account_name' => '']]) !!},
+                
+                // State Upload Excel Tamu
+                isDragging: false,
+                uploadStatus: '',
+                uploadError: '',
+                guestsJson: {!! json_encode(old('guests_json', '[]')) !!},
+                guestsList: [],
+
+                init() {
+                    try {
+                        const parsed = typeof this.guestsJson === 'string' ? JSON.parse(this.guestsJson) : this.guestsJson;
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            this.guestsList = parsed;
+                        }
+                    } catch(e) {}
+                },
+
+                addGiftAccount() {
+                    this.giftAccounts.push({ bank: '', account_number: '', account_name: '' });
+                },
+                removeGiftAccount(index) {
+                    if (this.giftAccounts.length > 1) {
+                        this.giftAccounts.splice(index, 1);
+                    }
+                },
+                nextStep() {
+                    if (this.step < 4) this.step++;
+                },
+                prevStep() {
+                    if (this.step > 1) this.step--;
+                },
+
+                handleGuestFileUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    this.parseGuestFile(file);
+                    event.target.value = '';
+                },
+
+                handleGuestDrop(event) {
+                    this.isDragging = false;
+                    const file = event.dataTransfer.files[0];
+                    if (!file) return;
+                    this.parseGuestFile(file);
+                },
+
+                parseGuestFile(file) {
+                    this.uploadStatus = '';
+                    this.uploadError = '';
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                            const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+                            if (!json || json.length === 0) {
+                                this.uploadError = 'File kosong atau tidak memiliki baris data tamu.';
+                                return;
+                            }
+
+                            let guests = [];
+                            json.forEach(row => {
+                                let name = '', address = '', phone = '', note = '';
+                                for (let key in row) {
+                                    const ck = key.trim().toLowerCase();
+                                    if (ck.includes('nama') || ck === 'name') name = row[key];
+                                    else if (ck.includes('alamat') || ck.includes('kota') || ck.includes('tempat') || ck === 'address') address = row[key];
+                                    else if (ck.includes('wa') || ck.includes('whatsapp') || ck.includes('telp') || ck.includes('phone') || ck.includes('hp')) phone = row[key];
+                                    else if (ck.includes('catatan') || ck.includes('note') || ck.includes('keterangan')) note = row[key];
+                                }
+                                if (name && String(name).trim()) {
+                                    guests.push({
+                                        name: String(name).trim(),
+                                        address: String(address || '').trim(),
+                                        phone: String(phone || '').trim(),
+                                        note: String(note || '').trim()
+                                    });
+                                }
+                            });
+
+                            if (guests.length === 0) {
+                                this.uploadError = 'Tidak ditemukan kolom nama tamu yang valid dalam file.';
+                                return;
+                            }
+
+                            this.guestsList = guests;
+                            this.guestsJson = JSON.stringify(guests);
+                            this.uploadStatus = 'Berhasil memuat ' + guests.length + ' tamu dari file ' + file.name + '!';
+                            setTimeout(() => { this.uploadStatus = ''; }, 6000);
+                        } catch (err) {
+                            this.uploadError = 'Gagal membaca file: ' + err.message;
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+            }));
+        });
+    </script>
 </body>
 </html>

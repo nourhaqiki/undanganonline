@@ -50,26 +50,26 @@
                 @csrf
 
                 <div>
-                    <label class="block text-xs font-semibold text-stone-300 mb-1.5">Alamat Email</label>
-                    <input type="email" name="email" value="{{ old('email', 'admin@undangan.test') }}" required autofocus
-                           class="w-full px-4 py-3 rounded-xl bg-stone-950 border border-white/10 text-white text-xs focus:ring-2 focus:ring-amber-400 focus:outline-none">
+                    <label for="email" class="block text-xs font-semibold text-stone-200 mb-1.5">Alamat Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email', 'admin@undangan.test') }}" required autofocus
+                           class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-stone-950 border border-white/15 text-white text-xs placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus-visible:ring-2 focus-visible:ring-amber-400">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-stone-300 mb-1.5">Kata Sandi</label>
-                    <input type="password" name="password" required placeholder="••••••••"
-                           class="w-full px-4 py-3 rounded-xl bg-stone-950 border border-white/10 text-white text-xs focus:ring-2 focus:ring-amber-400 focus:outline-none">
+                    <label for="password" class="block text-xs font-semibold text-stone-200 mb-1.5">Kata Sandi</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••"
+                           class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-stone-950 border border-white/15 text-white text-xs placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus-visible:ring-2 focus-visible:ring-amber-400">
                 </div>
 
                 <div class="flex items-center justify-between pt-1">
-                    <label class="flex items-center gap-2 cursor-pointer text-xs text-stone-400">
+                    <label class="flex items-center gap-2 cursor-pointer text-xs text-stone-300">
                         <input type="checkbox" name="remember" class="w-4 h-4 rounded bg-stone-950 border-white/20 text-amber-500 focus:ring-0">
                         <span>Ingat Sesi Masuk</span>
                     </label>
                 </div>
 
                 <button type="submit" 
-                        class="w-full min-h-[44px] py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-amber-400 hover:bg-amber-300 text-stone-950 shadow-lg shadow-amber-400/20 active:scale-95 transition">
+                        class="w-full min-h-[44px] py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-amber-400 hover:bg-amber-300 text-stone-950 shadow-lg shadow-amber-400/20 active:scale-95 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400">
                     Masuk ke Dashboard Admin
                 </button>
             </form>

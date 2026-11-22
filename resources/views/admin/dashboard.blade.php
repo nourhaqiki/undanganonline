@@ -182,15 +182,17 @@
                             <td class="py-3.5 px-3 text-stone-400 text-[11px]">
                                 {{ $inv->created_at->diffForHumans() }}
                             </td>
-                            <td class="py-3.5 px-3 text-right space-x-1">
-                                <a href="{{ route('invitation.show', $inv->slug) }}" target="_blank"
-                                   class="inline-block px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20 text-stone-200 transition">
-                                    Lihat Live
-                                </a>
-                                <a href="{{ route('invitation.manage', ['slug' => $inv->slug, 'token' => $inv->edit_token]) }}" target="_blank"
-                                   class="inline-block px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 transition">
-                                    Kelola
-                                </a>
+                            <td class="py-3.5 px-3 text-right">
+                                <div class="inline-flex items-center gap-1.5 justify-end">
+                                    <a href="{{ route('invitation.show', $inv->slug) }}" target="_blank"
+                                       class="min-h-[36px] inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20 text-stone-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-400">
+                                        Lihat Live ↗
+                                    </a>
+                                    <a href="{{ route('invitation.manage', ['slug' => $inv->slug, 'token' => $inv->edit_token]) }}" target="_blank"
+                                       class="min-h-[36px] inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-semibold bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-400">
+                                        Kelola
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @empty
