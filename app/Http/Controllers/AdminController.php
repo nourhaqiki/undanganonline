@@ -126,6 +126,13 @@ class AdminController extends Controller
             }
         }
 
+        // Hapus Foto Mempelai Pria & Wanita
+        foreach (['groom_photo', 'bride_photo'] as $photoKey) {
+            if (!empty($eventData[$photoKey]) && Storage::disk('public')->exists($eventData[$photoKey])) {
+                Storage::disk('public')->delete($eventData[$photoKey]);
+            }
+        }
+
         // Hapus Custom Music
         if (!empty($eventData['music_file']) && Storage::disk('public')->exists($eventData['music_file'])) {
             Storage::disk('public')->delete($eventData['music_file']);
@@ -160,6 +167,34 @@ class AdminController extends Controller
     /**
      * Toggle status aktif tema
      */
+    /**
+     * Show upload form for bride and groom photos
+     */
+    public function showMempelaiUpload()
+    {
+        return view('admin.mempelai_upload');
+    }
+
+    /**
+     * Handle upload of bride and groom photos
+     */
+    public function uploadMempelaiPhotos(Request $request)
+    {
+        $request->validate([
+            'bride' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'groom' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        if ($request->hasFile('bride')) {
+            $request->file('bride')->storeAs('public/mempelai', 'bride.jpg');
+        }
+        if ($request->hasFile('groom')) {
+            $request->file('groom')->storeAs('public/mempelai', 'groom.jpg');
+        }
+
+        return redirect()->back()->with('success', 'Foto mempelai berhasil diunggah.');
+    }
+
     public function toggleTheme($id)
     {
         $theme = Theme::findOrFail($id);

@@ -178,6 +178,11 @@
 
             <div class="space-y-6">
                 <div class="p-5 rounded-2xl bg-[#4A0A12]/50 border border-[#E0A938]/30 text-center">
+                    @if(!empty($invitation->event_data['groom_photo']))
+                        <div class="w-32 h-40 mx-auto mb-3 rounded-t-full rounded-b-xl overflow-hidden border-2 border-[#E0A938] p-0.5 bg-[#1E0407]">
+                            <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $invitation->event_data['primary_name'] }}" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
+                        </div>
+                    @endif
                     <h3 class="font-palembang-title text-2xl font-bold text-[#FAF5E6]">{{ $invitation->event_data['primary_name'] }}</h3>
                     @if(!empty($invitation->event_data['primary_title_parents']))
                         <p class="text-xs text-[#D7B5B9] mt-1 leading-relaxed font-sans-ui">{{ $invitation->event_data['primary_title_parents'] }}</p>
@@ -193,6 +198,11 @@
                 @if(!empty($invitation->event_data['secondary_name']))
                 <div class="text-center text-[#E0A938] font-palembang-title text-xl font-bold">&amp;</div>
                 <div class="p-5 rounded-2xl bg-[#4A0A12]/50 border border-[#E0A938]/30 text-center">
+                    @if(!empty($invitation->event_data['bride_photo']))
+                        <div class="w-32 h-40 mx-auto mb-3 rounded-t-full rounded-b-xl overflow-hidden border-2 border-[#E0A938] p-0.5 bg-[#1E0407]">
+                            <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $invitation->event_data['secondary_name'] }}" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
+                        </div>
+                    @endif
                     <h3 class="font-palembang-title text-2xl font-bold text-[#FAF5E6]">{{ $invitation->event_data['secondary_name'] }}</h3>
                     @if(!empty($invitation->event_data['secondary_title_parents']))
                         <p class="text-xs text-[#D7B5B9] mt-1 leading-relaxed font-sans-ui">{{ $invitation->event_data['secondary_title_parents'] }}</p>

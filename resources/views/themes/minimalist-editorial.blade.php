@@ -339,7 +339,7 @@
                 {{-- The Groom --}}
                 <div class="p-8 md:p-10 rounded-3xl bg-white border border-neutral-200/70 shadow-xl text-center space-y-4 hover:-translate-y-1.5 transition-all duration-300">
                     <div class="w-48 h-64 mx-auto rounded-2xl overflow-hidden shadow-md bg-neutral-100">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" alt="{{ $primaryName }}" class="w-full h-full object-cover">
+                        <img src="{{ !empty($invitation->event_data['groom_photo']) ? asset('storage/' . $invitation->event_data['groom_photo']) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $primaryName }}" class="w-full h-full object-cover">
                     </div>
                     <div class="space-y-1">
                         <span class="text-[11px] font-sans-inter tracking-[0.25em] uppercase text-[#8C7355] font-semibold">The Groom</span>
@@ -362,7 +362,7 @@
                 {{-- The Bride --}}
                 <div class="p-8 md:p-10 rounded-3xl bg-white border border-neutral-200/70 shadow-xl text-center space-y-4 hover:-translate-y-1.5 transition-all duration-300">
                     <div class="w-48 h-64 mx-auto rounded-2xl overflow-hidden shadow-md bg-neutral-100">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
+                        <img src="{{ !empty($invitation->event_data['bride_photo']) ? asset('storage/' . $invitation->event_data['bride_photo']) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
                     </div>
                     <div class="space-y-1">
                         <span class="text-[11px] font-sans-inter tracking-[0.25em] uppercase text-[#8C7355] font-semibold">The Bride</span>

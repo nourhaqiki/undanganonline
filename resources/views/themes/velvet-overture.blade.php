@@ -680,7 +680,9 @@
 
                         {{-- Photo Masked in Oval --}}
                         <div class="w-[148px] h-[208px] rounded-[50%] overflow-hidden z-0 bg-[#FAF5EE] shadow-inner">
-                            @if(!empty($coverImg))
+                            @if(!empty($invitation->event_data['groom_photo']))
+                                <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $primaryFullName }}" class="w-full h-full object-cover">
+                            @elseif(!empty($coverImg))
                                 <img src="{{ asset('storage/' . $coverImg) }}" alt="{{ $primaryFullName }}" class="w-full h-full object-cover">
                             @else
                                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" alt="{{ $primaryFullName }}" class="w-full h-full object-cover filter contrast-[1.05]">
@@ -731,7 +733,9 @@
                         </svg>
 
                         <div class="w-[148px] h-[208px] rounded-[50%] overflow-hidden z-0 bg-[#FAF5EE] shadow-inner">
-                            @if(!empty($gallery[0]))
+                            @if(!empty($invitation->event_data['bride_photo']))
+                                <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $secondaryFullName }}" class="w-full h-full object-cover">
+                            @elseif(!empty($gallery[0]))
                                 <img src="{{ asset('storage/' . $gallery[0]) }}" alt="{{ $secondaryFullName }}" class="w-full h-full object-cover">
                             @else
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" alt="{{ $secondaryFullName }}" class="w-full h-full object-cover filter contrast-[1.05]">

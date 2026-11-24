@@ -176,6 +176,11 @@
             <div class="space-y-6">
                 <!-- Profil 1 -->
                 <div class="p-5 rounded-2xl bg-white/5 border border-white/10 text-center">
+                    @if(!empty($invitation->event_data['groom_photo']))
+                        <div class="w-32 h-40 mx-auto mb-3 rounded-t-full rounded-b-xl overflow-hidden border-2 border-amber-400 p-0.5">
+                            <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $invitation->event_data['primary_name'] }}" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
+                        </div>
+                    @endif
                     <h3 class="font-serif-title text-2xl font-bold text-white">{{ $invitation->event_data['primary_name'] }}</h3>
                     @if(!empty($invitation->event_data['primary_title_parents']))
                         <p class="text-xs text-stone-400 mt-1 leading-relaxed">{{ $invitation->event_data['primary_title_parents'] }}</p>
@@ -192,6 +197,11 @@
                 @if(!empty($invitation->event_data['secondary_name']))
                 <div class="text-center text-amber-400 font-serif-title text-xl font-bold">&amp;</div>
                 <div class="p-5 rounded-2xl bg-white/5 border border-white/10 text-center">
+                    @if(!empty($invitation->event_data['bride_photo']))
+                        <div class="w-32 h-40 mx-auto mb-3 rounded-t-full rounded-b-xl overflow-hidden border-2 border-amber-400 p-0.5">
+                            <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $invitation->event_data['secondary_name'] }}" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
+                        </div>
+                    @endif
                     <h3 class="font-serif-title text-2xl font-bold text-white">{{ $invitation->event_data['secondary_name'] }}</h3>
                     @if(!empty($invitation->event_data['secondary_title_parents']))
                         <p class="text-xs text-stone-400 mt-1 leading-relaxed">{{ $invitation->event_data['secondary_title_parents'] }}</p>

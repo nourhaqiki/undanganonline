@@ -354,7 +354,7 @@
                 <div class="p-6 rounded-3xl bg-[#FAF4EF] border border-[#9D583D]/15 shadow-sm text-center">
                     <div class="arch-frame w-32 h-44 mx-auto p-1 bg-gradient-to-b from-[#9D583D] to-[#FFD8C8] shadow-md mb-4">
                         <div class="w-full h-full arch-frame overflow-hidden bg-stone-200">
-                            <img src="https://inv.mehnikah.com/wp-content/uploads/2026/09/XagQECOxF1zI9tdTz4yIIvoX7ogk3X1ksv8cRfB8.webp" alt="{{ $primaryName }}" class="w-full h-full object-cover">
+                            <img src="{{ !empty($invitation->event_data['groom_photo']) ? asset('storage/' . $invitation->event_data['groom_photo']) : 'https://inv.mehnikah.com/wp-content/uploads/2026/09/XagQECOxF1zI9tdTz4yIIvoX7ogk3X1ksv8cRfB8.webp' }}" alt="{{ $primaryName }}" class="w-full h-full object-cover">
                         </div>
                     </div>
                     <span class="text-[10px] font-sans-jura tracking-widest uppercase text-[#9D583D] font-bold block mb-1">The Groom</span>
@@ -380,7 +380,7 @@
                 <div class="p-6 rounded-3xl bg-[#FAF4EF] border border-[#9D583D]/15 shadow-sm text-center">
                     <div class="arch-frame w-32 h-44 mx-auto p-1 bg-gradient-to-b from-[#9D583D] to-[#FFD8C8] shadow-md mb-4">
                         <div class="w-full h-full arch-frame overflow-hidden bg-stone-200">
-                            <img src="https://inv.mehnikah.com/wp-content/uploads/2026/09/xfozkVzJRL2rccH4GGOsLoEIK0ihq1sxliQUifPV.webp" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
+                            <img src="{{ !empty($invitation->event_data['bride_photo']) ? asset('storage/' . $invitation->event_data['bride_photo']) : 'https://inv.mehnikah.com/wp-content/uploads/2026/09/xfozkVzJRL2rccH4GGOsLoEIK0ihq1sxliQUifPV.webp' }}" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
                         </div>
                     </div>
                     <span class="text-[10px] font-sans-jura tracking-widest uppercase text-[#9D583D] font-bold block mb-1">The Bride</span>

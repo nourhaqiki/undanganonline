@@ -21,6 +21,28 @@ Route::get('/template-tamu', [InvitationController::class, 'downloadGuestTemplat
 // --- HALAMAN PUBLIK UNDANGAN & BUKU TAMU LIVE ---
 Route::get('/u/{slug}', [InvitationController::class, 'show'])->name('invitation.show');
 Route::post('/u/{slug}/wish', [InvitationController::class, 'storeWish'])->name('invitation.wish');
+Route::get('/preview/{slug}', function ($slug) {
+    $theme = \App\Models\Theme::where('slug', $slug)->first();
+    $viewName = 'themes.' . $slug;
+    if (!view()->exists($viewName)) {
+        abort(404, 'Tema tidak ditemukan.');
+    }
+    $invitation = new \App\Models\Invitation([
+        'title' => $theme ? $theme->name : 'Undangan Online',
+        'category' => $theme->category ?? 'pernikahan',
+        'theme_slug' => $slug,
+        'slug' => 'demo-' . $slug,
+        'event_data' => []
+    ]);
+    return view($viewName, [
+        'invitation' => $invitation,
+        'guestName' => request('to', 'Tamu Undangan'),
+        'guestAddress' => request('addr', 'Padang'),
+        'wishesData' => [],
+        'initialCounts' => ['total' => 2, 'hadir' => 2, 'tidak_hadir' => 0],
+        'targetDate' => '2026-12-19T08:00:00+07:00'
+    ]);
+})->name('theme.preview');
 
 // --- AUTENTIKASI ADMIN ---
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');

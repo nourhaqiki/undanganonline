@@ -52,6 +52,8 @@ class InvitationController extends Controller
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gallery_images' => 'nullable|array|max:4',
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'groom_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'bride_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'music_mode' => 'required|string|in:none,ambient,custom',
             'music_file' => 'nullable|file|mimes:mp3,wav,ogg,audio/mpeg|max:5120',
         ]);
@@ -71,6 +73,14 @@ class InvitationController extends Controller
                 }
             }
         }
+
+        // Upload Foto Mempelai Pria & Wanita
+        $groomPhotoPath = $request->hasFile('groom_photo')
+            ? $request->file('groom_photo')->store('invitations/mempelai', 'public')
+            : null;
+        $bridePhotoPath = $request->hasFile('bride_photo')
+            ? $request->file('bride_photo')->store('invitations/mempelai', 'public')
+            : null;
 
         // Upload Custom Music
         $musicPath = null;
@@ -156,6 +166,8 @@ class InvitationController extends Controller
             'rundown' => $rundown,
             'cover_image' => $coverPath,
             'gallery_images' => $galleryPaths,
+            'groom_photo' => $groomPhotoPath,
+            'bride_photo' => $bridePhotoPath,
             'gift_accounts' => $giftAccounts,
             'music_mode' => $request->music_mode ?? 'ambient',
             'music_file' => $musicPath,
@@ -239,6 +251,8 @@ class InvitationController extends Controller
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gallery_images' => 'nullable|array|max:4',
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'groom_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'bride_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'music_mode' => 'required|string|in:none,ambient,custom',
             'music_file' => 'nullable|file|mimes:mp3,wav,ogg,audio/mpeg|max:5120',
         ]);
@@ -271,6 +285,23 @@ class InvitationController extends Controller
                     $galleryPaths[] = $photo->store('invitations/galleries', 'public');
                 }
             }
+        }
+
+        // Update Foto Mempelai Pria & Wanita
+        $groomPhotoPath = $currentData['groom_photo'] ?? null;
+        if ($request->hasFile('groom_photo')) {
+            if ($groomPhotoPath && Storage::disk('public')->exists($groomPhotoPath)) {
+                Storage::disk('public')->delete($groomPhotoPath);
+            }
+            $groomPhotoPath = $request->file('groom_photo')->store('invitations/mempelai', 'public');
+        }
+
+        $bridePhotoPath = $currentData['bride_photo'] ?? null;
+        if ($request->hasFile('bride_photo')) {
+            if ($bridePhotoPath && Storage::disk('public')->exists($bridePhotoPath)) {
+                Storage::disk('public')->delete($bridePhotoPath);
+            }
+            $bridePhotoPath = $request->file('bride_photo')->store('invitations/mempelai', 'public');
         }
 
         // Update Custom Music
@@ -344,6 +375,8 @@ class InvitationController extends Controller
             'rundown' => $rundown,
             'cover_image' => $coverPath,
             'gallery_images' => $galleryPaths,
+            'groom_photo' => $groomPhotoPath,
+            'bride_photo' => $bridePhotoPath,
             'gift_accounts' => $giftAccounts,
             'music_mode' => $request->music_mode ?? 'ambient',
             'music_file' => $musicPath,

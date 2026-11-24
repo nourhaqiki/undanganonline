@@ -170,6 +170,11 @@
 
             <div class="space-y-4">
                 <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                    @if(!empty($invitation->event_data['groom_photo']))
+                        <div class="w-28 h-28 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500 p-0.5 bg-white">
+                            <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $invitation->event_data['primary_name'] }}" class="w-full h-full object-cover rounded-full">
+                        </div>
+                    @endif
                     <h3 class="font-simple-title text-lg font-bold text-slate-900">{{ $invitation->event_data['primary_name'] }}</h3>
                     @if(!empty($invitation->event_data['primary_title_parents']))
                         <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ $invitation->event_data['primary_title_parents'] }}</p>
@@ -184,6 +189,11 @@
 
                 @if(!empty($invitation->event_data['secondary_name']))
                 <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                    @if(!empty($invitation->event_data['bride_photo']))
+                        <div class="w-28 h-28 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500 p-0.5 bg-white">
+                            <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $invitation->event_data['secondary_name'] }}" class="w-full h-full object-cover rounded-full">
+                        </div>
+                    @endif
                     <h3 class="font-simple-title text-lg font-bold text-slate-900">{{ $invitation->event_data['secondary_name'] }}</h3>
                     @if(!empty($invitation->event_data['secondary_title_parents']))
                         <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ $invitation->event_data['secondary_title_parents'] }}</p>

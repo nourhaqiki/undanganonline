@@ -602,6 +602,11 @@
                     <span>CAST NO. 01 • THE GROOM</span>
                     <span>35mm KODAK 400</span>
                 </div>
+                @if(!empty($invitation->event_data['groom_photo']))
+                <div class="w-40 h-52 mx-auto rounded-xl overflow-hidden border border-[#C5A059]/60 shadow-lg">
+                    <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $primaryName }}" class="w-full h-full object-cover">
+                </div>
+                @endif
                 <div>
                     <h4 class="font-cinema-title text-2xl font-bold text-white uppercase">{{ $primaryName }}</h4>
                     <p class="font-urban text-xs text-[#FAF7EF]/75 mt-0.5 leading-relaxed">{{ $primaryParents }}</p>
@@ -620,6 +625,11 @@
                     <span>CAST NO. 02 • THE BRIDE</span>
                     <span>35mm FUJIFILM 400</span>
                 </div>
+                @if(!empty($invitation->event_data['bride_photo']))
+                <div class="w-40 h-52 mx-auto rounded-xl overflow-hidden border border-[#C5A059]/60 shadow-lg">
+                    <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
+                </div>
+                @endif
                 <div>
                     <h4 class="font-cinema-title text-2xl font-bold text-white uppercase">{{ $secondaryName }}</h4>
                     <p class="font-urban text-xs text-[#FAF7EF]/75 mt-0.5 leading-relaxed">{{ $secondaryParents }}</p>

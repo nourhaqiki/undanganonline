@@ -336,6 +336,55 @@
                         <input type="file" name="gallery_images[]" multiple accept="image/*"
                                class="w-full text-xs text-stone-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-stone-200">
                     </div>
+
+                    <!-- Foto Mempelai Pria & Wanita -->
+                    <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4"
+                         x-data="{
+                             groomSrc: '{{ !empty($ed['groom_photo']) ? asset('storage/' . $ed['groom_photo']) : '' }}',
+                             brideSrc: '{{ !empty($ed['bride_photo']) ? asset('storage/' . $ed['bride_photo']) : '' }}',
+                             onPick(e, key) {
+                                 const f = e.target.files[0];
+                                 if (f) this[key] = URL.createObjectURL(f);
+                             }
+                         }">
+                        <div class="p-4 rounded-2xl bg-stone-950 border border-white/10 space-y-2.5">
+                            <label class="block text-xs font-semibold text-stone-300">Foto Mempelai Pria</label>
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-20 rounded-xl overflow-hidden bg-stone-900 border border-white/10 shrink-0 flex items-center justify-center">
+                                    <template x-if="groomSrc">
+                                        <img :src="groomSrc" alt="Foto Mempelai Pria" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!groomSrc">
+                                        <span class="text-[10px] text-stone-500 text-center px-1">Belum ada foto</span>
+                                    </template>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <input type="file" name="groom_photo" accept="image/*" @change="onPick($event, 'groomSrc')"
+                                           class="w-full text-[11px] text-stone-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-400 file:text-stone-950 cursor-pointer">
+                                    <p class="text-[10px] text-stone-500 mt-1">Tampil di semua tema. Maks. 2MB.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-stone-950 border border-white/10 space-y-2.5">
+                            <label class="block text-xs font-semibold text-stone-300">Foto Mempelai Wanita</label>
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-20 rounded-xl overflow-hidden bg-stone-900 border border-white/10 shrink-0 flex items-center justify-center">
+                                    <template x-if="brideSrc">
+                                        <img :src="brideSrc" alt="Foto Mempelai Wanita" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!brideSrc">
+                                        <span class="text-[10px] text-stone-500 text-center px-1">Belum ada foto</span>
+                                    </template>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <input type="file" name="bride_photo" accept="image/*" @change="onPick($event, 'brideSrc')"
+                                           class="w-full text-[11px] text-stone-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-400 file:text-stone-950 cursor-pointer">
+                                    <p class="text-[10px] text-stone-500 mt-1">Tampil di semua tema. Maks. 2MB.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 5. Kado & Musik -->

@@ -106,6 +106,14 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Tema sinematik retro bernuansa 35mm film reel, tiket bioskop vintage, bingkai sprocket roll, ulasan festival film, dan animasi proyektor analog.',
                 'is_active' => true,
             ],
+            [
+                'name' => 'Baralek Gadang Minangkabau',
+                'slug' => 'minang',
+                'category' => 'pernikahan',
+                'accent_color' => '#D4AF37',
+                'description' => 'Kemegahan adat Minangkabau berlatar Rumah Gadang & Danau Singkarak, tenun songket marun emas, mahkota suntiang berayun lembut, guguran melati alami, dan alunan talempong pentatonis.',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($themes as $theme) {

@@ -82,7 +82,7 @@
             <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <span class="text-2xl">🎭</span>
                 <h2 class="font-bold text-sm text-white mt-2">Tema Adat &amp; Bisnis</h2>
-                <p class="text-xs text-stone-400 mt-1">Pilihan tema Jawa, Sunda, Palembang, hingga Bisnis VIP.</p>
+                <p class="text-xs text-stone-400 mt-1">Pilihan tema Minangkabau, Jawa, Sunda, Palembang, hingga Bisnis VIP.</p>
             </div>
             <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <span class="text-2xl">💬</span>
@@ -191,18 +191,39 @@
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             @foreach($themes as $th)
+                            @php
+                                $thumbMap = [
+                                    'minang' => asset('images/themes/minang/bg-rumah-gadang-hd.jpg'),
+                                    'jawa' => asset('images/themes/minang/bg-joglo-borobudur.jpg'),
+                                    'sunda' => asset('images/themes/minang/bg-green-gunungan.jpg'),
+                                    'palembang' => asset('images/themes/minang/bg-maroon-songket-hd.jpg'),
+                                ];
+                                $thumbUrl = $thumbMap[$th->slug] ?? null;
+                            @endphp
                             <label x-show="category === 'semua' || '{{ $th->category }}' === 'semua' || category === '{{ $th->category }}' || (category === 'tunangan' && '{{ $th->category }}' === 'pernikahan') || (category === 'lainnya')"
-                                   class="relative p-4 rounded-2xl border cursor-pointer transition text-left flex flex-col justify-between"
-                                   :class="selectedTheme === '{{ $th->slug }}' ? 'bg-amber-400/10 border-amber-400 shadow-md shadow-amber-400/10' : 'bg-stone-900 border-white/10 hover:border-white/20'">
+                                   class="relative p-4 rounded-2xl border cursor-pointer transition text-left flex flex-col justify-between overflow-hidden group"
+                                   :class="selectedTheme === '{{ $th->slug }}' ? 'bg-amber-400/10 border-amber-400 shadow-md shadow-amber-400/10 ring-1 ring-amber-400/50' : 'bg-stone-900 border-white/10 hover:border-white/20'">
                                 <input type="radio" name="theme_slug" value="{{ $th->slug }}" x-model="selectedTheme" class="sr-only" required>
                                 
                                 <div>
+                                    @if($thumbUrl)
+                                    <div class="w-full h-28 mb-3 rounded-xl overflow-hidden relative border border-white/10 bg-stone-950">
+                                        <img src="{{ $thumbUrl }}" alt="{{ $th->name }}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-transparent to-transparent"></div>
+                                        @if($th->slug === 'minang')
+                                            <span class="absolute bottom-2 left-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 uppercase tracking-wider shadow">
+                                                Adat Minangkabau
+                                            </span>
+                                        @endif
+                                    </div>
+                                    @endif
+
                                     <div class="flex items-center justify-between mb-2">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-3.5 h-3.5 rounded-full border border-white/20" style="background-color: {{ $th->accent_color }};"></span>
+                                            <span class="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0" style="background-color: {{ $th->accent_color }};"></span>
                                             <strong class="text-xs font-bold text-white">{{ $th->name }}</strong>
                                         </div>
-                                        <span class="text-[10px] px-2 py-0.5 rounded-full uppercase font-medium bg-white/5 text-stone-400">
+                                        <span class="text-[10px] px-2 py-0.5 rounded-full uppercase font-medium bg-white/5 text-stone-400 shrink-0">
                                             {{ $th->category }}
                                         </span>
                                     </div>
@@ -211,10 +232,21 @@
                                     </p>
                                 </div>
 
-                                <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px]">
-                                    <span class="text-amber-400 font-semibold" x-show="selectedTheme === '{{ $th->slug }}'">✓ Terpilih</span>
-                                    <span class="text-stone-500" x-show="selectedTheme !== '{{ $th->slug }}'">Pilih Tema</span>
+                                <div class="mt-3 pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px]">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-amber-400 font-semibold" x-show="selectedTheme === '{{ $th->slug }}'">✓ Terpilih</span>
+                                        <span class="text-stone-500" x-show="selectedTheme !== '{{ $th->slug }}'">Pilih Tema</span>
+                                    </div>
+
+                                    @if($th->slug === 'minang')
+                                    <a href="{{ url('/themes/baralek-gadang.html') }}" target="_blank" @click.stop
+                                       class="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1 text-[11px] hover:underline">
+                                        <span>Pratinjau Tema</span>
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                    </a>
+                                    @else
                                     <span class="font-mono text-stone-500 text-[10px]">{{ $th->accent_color }}</span>
+                                    @endif
                                 </div>
                             </label>
                             @endforeach
@@ -473,6 +505,47 @@
                                    class="w-full text-xs text-stone-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-stone-200 hover:file:bg-white/20 cursor-pointer">
                             <p class="text-[10px] text-stone-500 mt-1">Dapat memilih hingga 4 foto untuk ditampilkan dalam grid &amp; lightbox.</p>
                         </div>
+
+                        <!-- Upload Foto Mempelai Pria & Wanita -->
+                        <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 space-y-2.5">
+                                <label class="block text-xs font-bold text-stone-300">Foto Mempelai Pria</label>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-16 h-20 rounded-xl overflow-hidden bg-stone-950 border border-white/10 shrink-0 flex items-center justify-center">
+                                        <template x-if="groomPreview">
+                                            <img :src="groomPreview" alt="Preview Mempelai Pria" class="w-full h-full object-cover">
+                                        </template>
+                                        <template x-if="!groomPreview">
+                                            <span class="text-[10px] text-stone-500 text-center px-1">Belum ada foto</span>
+                                        </template>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <input type="file" name="groom_photo" accept="image/*" @change="previewMempelai($event, 'groomPreview')"
+                                               class="w-full text-[11px] text-stone-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-400 file:text-stone-950 hover:file:bg-amber-300 cursor-pointer">
+                                        <p class="text-[10px] text-stone-500 mt-1">Tampil di semua tema. Maks. 2MB.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 space-y-2.5">
+                                <label class="block text-xs font-bold text-stone-300">Foto Mempelai Wanita</label>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-16 h-20 rounded-xl overflow-hidden bg-stone-950 border border-white/10 shrink-0 flex items-center justify-center">
+                                        <template x-if="bridePreview">
+                                            <img :src="bridePreview" alt="Preview Mempelai Wanita" class="w-full h-full object-cover">
+                                        </template>
+                                        <template x-if="!bridePreview">
+                                            <span class="text-[10px] text-stone-500 text-center px-1">Belum ada foto</span>
+                                        </template>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <input type="file" name="bride_photo" accept="image/*" @change="previewMempelai($event, 'bridePreview')"
+                                               class="w-full text-[11px] text-stone-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-400 file:text-stone-950 hover:file:bg-amber-300 cursor-pointer">
+                                        <p class="text-[10px] text-stone-500 mt-1">Tampil di semua tema. Maks. 2MB.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Rekening Kado / Amplop Digital Dinamis -->
@@ -580,6 +653,13 @@
                 uploadError: '',
                 guestsJson: {!! json_encode(old('guests_json', '[]')) !!},
                 guestsList: [],
+                groomPreview: null,
+                bridePreview: null,
+
+                previewMempelai(event, key) {
+                    const file = event.target.files[0];
+                    if (file) this[key] = URL.createObjectURL(file);
+                },
 
                 init() {
                     try {
