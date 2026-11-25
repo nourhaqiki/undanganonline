@@ -8,11 +8,11 @@ export function initMotionEngine() {
     document.documentElement.classList.add('motion-ready');
     document.querySelectorAll('[data-reveal-group]').forEach((group) => {
         group.querySelectorAll('[data-reveal]').forEach((element, index) => {
-            element.style.transitionDelay = `${index * 120}ms`;
+            element.style.transitionDelay = `${index * 100}ms`;
         });
     });
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
         reveals.forEach((element) => element.dataset.revealed = 'true');
         return;
     }
@@ -21,13 +21,9 @@ export function initMotionEngine() {
         entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             entry.target.dataset.revealed = 'true';
-            entry.target.addEventListener('transitionend', () => { entry.target.style.willChange = 'auto'; }, { once: true });
             observer.unobserve(entry.target);
         });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
 
-    reveals.forEach((element) => {
-        element.style.willChange = 'transform, opacity';
-        observer.observe(element);
-    });
+    reveals.forEach((element) => observer.observe(element));
 }

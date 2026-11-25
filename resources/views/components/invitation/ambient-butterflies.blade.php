@@ -1,4 +1,5 @@
-@props(['eventType' => 'wedding'])
+@props(['eventType' => 'wedding', 'themeSlug' => ''])
 
-{{-- Robust Ambient 3D Flying Butterflies --}}
-@include('themes.partials.butterflies')
+@if (in_array($eventType, ['wedding', 'engagement'], true) && in_array($themeSlug, ['jawa', 'sunda', 'palembang'], true))
+    @include('themes.partials.butterflies')
+@endif

@@ -63,7 +63,7 @@
         }
         @media (min-width: 768px) {
             #sideleft { display: flex; }
-            #sideright { width: clamp(380px, 32vw, 460px); flex-shrink: 0; }
+            #sideright { width: clamp(340px, 38vw, 460px); flex-shrink: 0; }
         }
 
         /* Section 1: Cover Screen (Safe on Short Screens & Landscape Phones) */
@@ -111,21 +111,21 @@
         #overlay-content.is-revealed .ov-line:nth-child(5) { transition-delay: .64s; }
 
         /* Natural Animations & Motion */
-        @keyframes jvCoverBreath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.022); } }
-        .goyangan { animation: jvGoyangan 4s cubic-bezier(.37,0,.63,1) infinite; transform-origin: bottom center; will-change: transform; }
-        @keyframes jvGoyangan { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
-        .atas-bawah { animation: jvAtasBawah 2s cubic-bezier(.45,0,.55,1) infinite; will-change: transform; }
-        @keyframes jvAtasBawah { 0%, 100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,14px,0); } }
+        @keyframes jvCoverBreath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        .goyangan { animation: jvGoyangan 4s cubic-bezier(.37,0,.63,1) infinite; transform-origin: bottom center; }
+        @keyframes jvGoyangan { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+        .atas-bawah { animation: jvAtasBawah 2s cubic-bezier(.45,0,.55,1) infinite; }
+        @keyframes jvAtasBawah { 0%, 100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,12px,0); } }
         .putar-kiri { animation: jvPutarKiri 18s linear infinite; }
         .putar-kiri.is-paused { animation-play-state: paused; }
         @keyframes jvPutarKiri { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-        @keyframes jvSlideUp { from { opacity: 0; transform: translate3d(0,48px,0); } to { opacity: .45; transform: translate3d(0,0,0); } }
-        .cover-ornament-in { animation: jvSlideUp 1.3s cubic-bezier(.22,1,.36,1) forwards; }
+        @keyframes jvSlideUp { from { opacity: 0; transform: translate3d(0,40px,0); } to { opacity: .45; transform: translate3d(0,0,0); } }
+        .cover-ornament-in { animation: jvSlideUp 1.1s cubic-bezier(.22,1,.36,1) forwards; }
 
         /* Scroll Reveals */
         .muncul, .muncul-kiri, .muncul-kanan, .zoom {
-            opacity: 0; will-change: opacity, transform;
-            transition: opacity .85s cubic-bezier(.22,1,.36,1), transform 1.05s cubic-bezier(.22,1,.36,1);
+            opacity: 0;
+            transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .95s cubic-bezier(.22,1,.36,1);
         }
         .muncul { transform: translate3d(0,38px,0) scale(.96); }
         .muncul-kiri { transform: translate3d(-40px,0,0) scale(.97); }
@@ -172,7 +172,7 @@
 
         /* Sticky Bottom Menu: Always Centered Inside #sideright Without Scrollbar Offset */
         #menunav {
-            position: sticky; bottom: 12px; width: min(90%, 380px); margin: 0 auto 14px; z-index: 45;
+            position: sticky; bottom: max(12px, env(safe-area-inset-bottom)); width: min(92%, 380px); margin: 0 auto 14px; z-index: 45;
             background: var(--jv-brown); border: 1px solid rgba(232,178,39,.28); border-radius: 10px;
             padding: 8px; display: flex; justify-content: space-evenly; align-items: center;
             box-shadow: 0 12px 30px rgba(0,0,0,.45);
@@ -366,7 +366,7 @@
 
                 {{-- 2A. OPENING MOTION VIDEO --}}
                 <section id="motion-video">
-                    <video id="motion-video-player" playsinline muted preload="auto"
+                    <video id="motion-video-player" playsinline muted preload="metadata"
                            poster="{{ asset('images/themes/modern-javanese/UCL00064.jpg') }}"
                            :class="videoEnded ? 'is-ended' : ''">
                         <source src="{{ asset('images/themes/modern-javanese/HD-LUXEE-JOGJA-1.mp4') }}" type="video/mp4">
@@ -400,11 +400,11 @@
                 {{-- 2B. AYAT AR-RUM 21 IN CARVED GEBYOK FRAME --}}
                 <section id="opening" class="jv-quote-sec">
                     <div class="jv-bg-layer opacity-5" style="background-image:url('{{ asset('images/themes/modern-javanese/Luxee-Jogja-13.png') }}'); background-size:contain;"></div>
-                    <img src="{{ asset('images/themes/modern-javanese/Luxee-Jogja-9.png') }}" alt=""
+                    <img src="{{ asset('images/themes/modern-javanese/Luxee-Jogja-9.png') }}" alt="" loading="lazy" decoding="async"
                          class="absolute inset-0 w-full h-full object-fill pointer-events-none z-[1]">
 
-                    <div class="muncul relative z-10 w-[58%] sm:w-[60%] mx-auto min-h-[320px] flex flex-col justify-center items-center text-center px-2 py-8">
-                        <img src="{{ asset('images/themes/modern-javanese/Luxee-Jogja-8.png') }}" alt="Gunungan" class="zoom w-24 sm:w-28 h-auto mb-4">
+                    <div class="muncul relative z-10 w-[68%] sm:w-[60%] mx-auto min-h-[300px] flex flex-col justify-center items-center text-center px-2 py-8">
+                        <img src="{{ asset('images/themes/modern-javanese/Luxee-Jogja-8.png') }}" alt="Gunungan" loading="lazy" decoding="async" class="zoom w-24 sm:w-28 h-auto mb-4">
                         <p class="f-roman text-[13px] sm:text-[15px] leading-[1.55] text-[#34000C]">{{ $quote }}</p>
                         @if(!str_contains($quote, 'Ar-Rum'))
                             <p class="f-roman text-[14px] font-semibold tracking-[0.05em] text-[#34000C] mt-3">Q.S. Ar-Rum: 21</p>
@@ -429,10 +429,10 @@
                             <div class="{{ $person['anim'] }} space-y-3 px-4">
                                 <p class="f-script text-[34px] sm:text-[40px] font-semibold tracking-[0.05em] text-white drop-shadow">{{ $person['role'] }}</p>
                                 @if($person['isDef'])
-                                    <img src="{{ $person['url'] }}" alt="{{ $person['full'] }}" class="w-full max-w-[290px] mx-auto h-auto">
+                                    <img src="{{ $person['url'] }}" alt="{{ $person['full'] }}" loading="lazy" decoding="async" class="w-full max-w-[290px] mx-auto h-auto">
                                 @else
                                     <div class="w-56 h-72 mx-auto rounded-full border-4 border-[#E8B227] overflow-hidden shadow-2xl p-1 bg-[#4D290F]">
-                                        <img src="{{ $person['url'] }}" alt="{{ $person['full'] }}" class="w-full h-full object-cover rounded-full">
+                                        <img src="{{ $person['url'] }}" alt="{{ $person['full'] }}" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-full">
                                     </div>
                                 @endif
                                 <h3 class="f-serif text-[25px] sm:text-[28px] font-medium tracking-[0.04em] text-[#E8B227] pt-1">{{ $person['full'] }}</h3>
@@ -553,11 +553,11 @@
 
                         <div class="py-2">
                             <div class="text-left">
-                                <img @click="openLightbox('{{ $duoPhotos[0] }}')" src="{{ $duoPhotos[0] }}" alt="Moment 1"
+                                <img @click="openLightbox('{{ $duoPhotos[0] }}')" src="{{ $duoPhotos[0] }}" alt="Moment 1" loading="lazy" decoding="async"
                                      class="muncul-kiri w-[62%] aspect-[2/3] object-cover border-2 border-[#4D290F] shadow-xl cursor-pointer inline-block">
                             </div>
                             <div class="text-right -mt-28 sm:-mt-36 relative z-10">
-                                <img @click="openLightbox('{{ $duoPhotos[1] }}')" src="{{ $duoPhotos[1] }}" alt="Moment 2"
+                                <img @click="openLightbox('{{ $duoPhotos[1] }}')" src="{{ $duoPhotos[1] }}" alt="Moment 2" loading="lazy" decoding="async"
                                      class="muncul-kanan w-[62%] aspect-[2/3] object-cover border-2 border-[#4D290F] shadow-xl cursor-pointer inline-block">
                             </div>
                         </div>
@@ -577,7 +577,7 @@
                             <p class="f-roman text-[14px] leading-relaxed text-black">
                                 {{ $ed['love_story'] ?? 'Di antara ribuan wajah, aku menemukan tatapanmu. Tatapan yang sederhana, namun mampu membuat dunia terasa tenang. Perjalanan kita mungkin tak selalu mudah, tapi di setiap langkah, aku menemukan alasan untuk tetap bertahan. Kini, dengan penuh cinta, kita memilih untuk saling menggenggam, menjadikan cinta ini abadi dalam pernikahan.' }}
                             </p>
-                            <img src="{{ $storyPhoto }}" alt="Cerita Kita" class="w-full rounded-[5px] object-cover mt-2">
+                            <img src="{{ $storyPhoto }}" alt="Cerita Kita" loading="lazy" decoding="async" class="w-full rounded-[5px] object-cover mt-2">
                             <div class="w-[69%] h-[2px] bg-[#4D290F] mx-auto mt-4"></div>
                         </div>
                     </div>
@@ -683,7 +683,7 @@
                                     @foreach($gifts as $idx => $acc)
                                     <div class="bg-white rounded-[10px] p-4 text-[#401809] shadow-md space-y-1.5">
                                         @if(!empty($acc['logo']))
-                                            <img src="{{ $acc['logo'] }}" alt="{{ $acc['bank'] }}" class="max-w-[38%] h-auto mx-auto mb-1">
+                                            <img src="{{ $acc['logo'] }}" alt="{{ $acc['bank'] }}" loading="lazy" decoding="async" class="max-w-[38%] h-auto mx-auto mb-1">
                                         @else
                                             <p class="f-tenor text-xs uppercase tracking-widest font-bold text-[#89612C]">{{ $acc['bank'] }}</p>
                                         @endif
@@ -799,8 +799,8 @@
                     }
 
                     setTimeout(() => { this.coverDismissed = true; }, 750);
-                    setTimeout(() => { if (!videoActive) this.overlayShown = true; }, 8200);
-                    setTimeout(() => { this.unlockScroll(); }, 20800);
+                    setTimeout(() => { if (!videoActive) this.overlayShown = true; }, 4500);
+                    setTimeout(() => { this.unlockScroll(); }, 13000);
 
                     this.$nextTick(() => this.initScrollReveals());
                 },

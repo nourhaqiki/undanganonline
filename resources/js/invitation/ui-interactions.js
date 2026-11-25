@@ -1,5 +1,3 @@
-import { initButterflySystem } from './butterfly-system';
-
 const showToast = () => {
     const toast = document.querySelector('[data-copy-toast]');
     if (!toast) return;
@@ -16,28 +14,47 @@ const copyValue = (button) => {
     showToast();
 };
 
+const NAV_ALIASES = {
+    hero: ['hero', 'cover'],
+    profil: ['profil', 'couple', 'mempelai'],
+    acara: ['acara', 'event'],
+    galeri: ['galeri', 'gallery'],
+    ucapan: ['ucapan', 'wishes'],
+};
+
+const resolveNavSection = (key) => {
+    for (const id of (NAV_ALIASES[key] || [key])) {
+        const el = document.getElementById(id);
+        if (el) return el;
+    }
+    return null;
+};
+
 export function initUiInteractions() {
-    document.querySelectorAll('[data-nav-target]').forEach((button) => {
-        button.addEventListener('click', () => document.getElementById(button.dataset.navTarget)?.scrollIntoView({ behavior: 'smooth' }));
+    const navButtons = [...document.querySelectorAll('[data-nav-target]')];
+    navButtons.forEach((button) => {
+        button.addEventListener('click', () => resolveNavSection(button.dataset.navTarget)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     });
 
-    const navObserver = new IntersectionObserver((entries) => {
-        entries.filter((entry) => entry.isIntersecting).forEach((entry) => {
-            document.querySelectorAll('[data-nav-target]').forEach((button) => {
-                button.classList.toggle('is-active', button.dataset.navTarget === entry.target.id);
-            });
+    if (navButtons.length) {
+        const idToKey = new Map();
+        navButtons.forEach((button) => {
+            const key = button.dataset.navTarget;
+            const sec = resolveNavSection(key);
+            if (sec) idToKey.set(sec, key);
         });
-    }, { rootMargin: '-40% 0px -40% 0px' });
-    document.querySelectorAll('[data-nav-target]').forEach((button) => {
-        const section = document.getElementById(button.dataset.navTarget);
-        if (section) navObserver.observe(section);
-    });
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.filter((entry) => entry.isIntersecting).forEach((entry) => {
+                const activeKey = idToKey.get(entry.target);
+                navButtons.forEach((button) => button.classList.toggle('is-active', button.dataset.navTarget === activeKey));
+            });
+        }, { rootMargin: '-40% 0px -40% 0px' });
+        idToKey.forEach((_, sec) => navObserver.observe(sec));
+    }
 
     document.querySelectorAll('.btn-copy').forEach((button) => button.addEventListener('click', () => copyValue(button)));
     window.addEventListener('invitation:copy', showToast);
-    window.addEventListener('invitation:opened', () => {
-        document.body.classList.add('invitation-open');
-        initButterflySystem();
-    }, { once: true });
+    window.addEventListener('invitation:opened', () => document.body.classList.add('invitation-open'), { once: true });
     window.addEventListener('invitation:music-state', (event) => document.querySelector('[data-music-disc]')?.classList.toggle('is-playing', event.detail.playing));
 }

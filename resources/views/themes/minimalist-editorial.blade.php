@@ -2,7 +2,7 @@
 <html lang="id" class="scroll-smooth h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ $invitation->title }} | The Wedding of {{ $invitation->event_data['primary_name'] ?? '' }} &amp; {{ $invitation->event_data['secondary_name'] ?? '' }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -31,28 +31,18 @@
         .font-serif-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
         .font-sans-inter      { font-family: 'Inter', system-ui, sans-serif; }
 
-        /* Motion Cover Opening Slide & Fade */
-        #section-cover {
-            transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #section-cover.is-hidden {
-            opacity: 0;
-            transform: translateY(-100%);
-            pointer-events: none;
-            display: none !important;
-        }
-
         /* Natural Scroll Reveal */
         .reveal {
             opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
+            transform: translate3d(0, 22px, 0);
+            transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .reveal.revealed {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
         }
 
         /* Floating music toast notification */
@@ -144,7 +134,7 @@
 @endphp
 
 <body data-event-type="{{ $eventType }}"
-      class="font-sans-inter bg-[#FAF8F5] text-[#1A1512] min-h-screen overflow-x-hidden antialiased selection:bg-[#8C7355] selection:text-white"
+      class="font-sans-inter bg-[#FAF8F5] text-[#1A1512] h-dvh overflow-x-clip antialiased selection:bg-[#8C7355] selection:text-white"
       x-data="{
           ...invitationEngine({
               musicMode: '{{ $invitation->event_data['music_mode'] ?? 'ambient' }}',
@@ -164,10 +154,15 @@
       x-init="
           document.body.classList.add('overflow-hidden');
           $nextTick(() => {
+              const els = document.querySelectorAll('.reveal');
+              if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+                  els.forEach(el => el.classList.add('revealed'));
+                  return;
+              }
               const obs = new IntersectionObserver((entries) => {
-                  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
-              }, { threshold: 0.12 });
-              document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+                  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
+              }, { threshold: 0.1 });
+              els.forEach(el => obs.observe(el));
           });
       ">
 
@@ -175,9 +170,9 @@
          1. COVER SCREEN TERKUNCI (#section-cover)
          Clean Editorial Minimalist Layout
          ========================================================= --}}
-    <div id="section-cover"
-         :class="isOpen ? 'is-hidden' : ''"
-         class="fixed inset-0 z-50 h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center p-8 bg-[#FAF8F5] border-b border-[#8C7355]/20">
+    <div id="section-cover" data-cover-gate
+         :class="isOpen ? 'is-opening' : ''"
+         class="motion-cover fixed inset-0 z-50 h-dvh w-full overflow-y-auto flex flex-col justify-between items-center text-center bg-[#FAF8F5] border-b border-[#8C7355]/20">
 
         {{-- Top Label --}}
         <div class="pt-4 space-y-1">
@@ -236,7 +231,7 @@
          FLOATING SONG NOTIFICATION TOAST
          ========================================================= --}}
     <div x-cloak x-show="showMusicToast"
-         class="fixed bottom-24 right-6 z-[60] bg-black/85 text-white px-5 py-3 rounded-full backdrop-blur-md shadow-2xl text-xs font-sans-inter flex items-center gap-2 animate-toast pointer-events-none">
+         class="fixed bottom-24 inset-x-4 sm:inset-x-auto sm:right-6 z-[60] bg-black/85 text-white px-5 py-3 rounded-full backdrop-blur-md shadow-2xl text-xs font-sans-inter flex items-center justify-center gap-2 animate-toast pointer-events-none max-w-xs mx-auto">
         <span class="animate-pulse">🎵</span>
         <span>Elvis Presley - Can't Help Falling in Love</span>
     </div>
@@ -339,7 +334,7 @@
                 {{-- The Groom --}}
                 <div class="p-8 md:p-10 rounded-3xl bg-white border border-neutral-200/70 shadow-xl text-center space-y-4 hover:-translate-y-1.5 transition-all duration-300">
                     <div class="w-48 h-64 mx-auto rounded-2xl overflow-hidden shadow-md bg-neutral-100">
-                        <img src="{{ !empty($invitation->event_data['groom_photo']) ? asset('storage/' . $invitation->event_data['groom_photo']) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $primaryName }}" class="w-full h-full object-cover">
+                        <img src="{{ !empty($invitation->event_data['groom_photo']) ? asset('storage/' . $invitation->event_data['groom_photo']) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $primaryName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                     </div>
                     <div class="space-y-1">
                         <span class="text-[11px] font-sans-inter tracking-[0.25em] uppercase text-[#8C7355] font-semibold">The Groom</span>
@@ -362,7 +357,7 @@
                 {{-- The Bride --}}
                 <div class="p-8 md:p-10 rounded-3xl bg-white border border-neutral-200/70 shadow-xl text-center space-y-4 hover:-translate-y-1.5 transition-all duration-300">
                     <div class="w-48 h-64 mx-auto rounded-2xl overflow-hidden shadow-md bg-neutral-100">
-                        <img src="{{ !empty($invitation->event_data['bride_photo']) ? asset('storage/' . $invitation->event_data['bride_photo']) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
+                        <img src="{{ !empty($invitation->event_data['bride_photo']) ? asset('storage/' . $invitation->event_data['bride_photo']) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $secondaryName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                     </div>
                     <div class="space-y-1">
                         <span class="text-[11px] font-sans-inter tracking-[0.25em] uppercase text-[#8C7355] font-semibold">The Bride</span>
@@ -507,7 +502,7 @@
                             {{-- Foto Milestone (User Request) --}}
                             @if(!empty($item['photo']))
                                 <div class="w-full h-48 md:h-52 rounded-2xl overflow-hidden bg-neutral-100 shadow-inner">
-                                    <img src="{{ $item['photo'] }}" alt="{{ $item['title'] ?? 'Story Photo' }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                                    <img src="{{ $item['photo'] }}" alt="{{ $item['title'] ?? 'Story Photo' }}" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-500">
                                 </div>
                             @endif
 
@@ -558,7 +553,7 @@
                 @foreach($gallery as $photo)
                     <div class="aspect-square rounded-2xl overflow-hidden bg-neutral-100 shadow-md cursor-pointer group"
                          @click="openLightbox('{{ asset('storage/' . $photo) }}')">
-                        <img src="{{ asset('storage/' . $photo) }}" alt="Foto Galeri" class="w-full h-full object-cover group-hover:scale-108 transition duration-700">
+                        <img src="{{ asset('storage/' . $photo) }}" alt="Foto Galeri" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
                 @endforeach
             </div>

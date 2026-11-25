@@ -2,54 +2,22 @@
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ $invitation->title ?? 'The Wedding of Fadhil & Nisa | Baralek Gadang' }} — Minangkabau Royal</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Google Fonts: Playfair Display, Marcellus, Figtree & Cormorant Garamond -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Marcellus&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Figtree:wght@400;500;600;700&family=Marcellus&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tone.js Audio Synth Fallback -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              mk: {
-                paper: '#FBF3E4',
-                'paper-2': '#F3E6CF',
-                'paper-3': '#E4D2B0',
-                red: '#9E1B22',
-                'red-2': '#7A1218',
-                black: '#1E1612',
-                wood: '#2E1912',
-                gold: '#C9A227',
-                'gold-2': '#9A7514',
-                'gold-3': '#F1D98A',
-                terra: '#B5643C',
-                green: '#4E7A4A',
-                ink: '#2A1D17',
-                'ink-2': '#6B5446',
-              }
-            },
-            fontFamily: {
-              display: ['"Playfair Display"', 'Georgia', 'serif'],
-              caps: ['"Marcellus"', 'Georgia', 'serif'],
-              body: ['"Figtree"', '"Plus Jakarta Sans"', 'sans-serif'],
-              cormorant: ['"Cormorant Garamond"', 'serif'],
-            }
-          }
-        }
-      }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+      .font-display   { font-family: 'Playfair Display', Georgia, serif; }
+      .font-caps      { font-family: 'Marcellus', Georgia, serif; }
+      .font-body      { font-family: 'Figtree', system-ui, sans-serif; }
+      .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
       :root {
         --mk-paper: #FBF3E4;
         --mk-paper-2: #F3E6CF;
@@ -107,11 +75,9 @@
         50% { background-position: 0 0; }
       }
 
-      /* Kabut Bergerak Melintasi Lembah & Puncak (Motion Mist) */
       .mk-mist {
         animation: mk-mist var(--dur, 40s) ease-in-out infinite;
         animation-delay: var(--delay, 0s);
-        will-change: transform;
       }
       @keyframes mk-mist {
         0%, 100% { transform: translate3d(0, 0, 0); }
@@ -124,7 +90,6 @@
         transform-origin: 0 0;
         animation: mk-flag 3.2s ease-in-out infinite;
         animation-delay: var(--delay, 0s);
-        will-change: transform;
       }
       @keyframes mk-flag {
         0%, 100% { transform: skewY(0deg) scaleX(1) rotate(0deg); }
@@ -137,7 +102,6 @@
         left: -20%;
         animation: mk-eagle var(--dur, 46s) linear infinite;
         animation-delay: var(--delay, 0s);
-        will-change: transform, left;
       }
       @keyframes mk-eagle {
         0% { left: -20%; transform: translate3d(0, 0, 0); }
@@ -160,7 +124,6 @@
       .mk-glint {
         animation: mk-glint var(--dur, 3s) ease-in-out infinite;
         animation-delay: var(--delay, 0s);
-        will-change: transform, opacity;
       }
       @keyframes mk-glint {
         0%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); }
@@ -172,7 +135,6 @@
       .mk-petal {
         animation: mk-petal var(--dur, 14s) linear infinite;
         animation-delay: var(--delay, 0s);
-        will-change: transform, opacity;
       }
       @keyframes mk-petal {
         0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
@@ -184,7 +146,6 @@
       /* Ayunan Lembut (Organic Floating & Sway) */
       .mk-float {
         animation: mk-float 6s ease-in-out infinite;
-        will-change: transform;
       }
       @keyframes mk-float {
         0%, 100% { transform: translate3d(0, 0, 0); }
@@ -220,28 +181,19 @@
       ==================================================================== */
       /* 1. Cover Gate Exit */
       #cover-stage {
-        transition: transform 2.2s cubic-bezier(0.5, 0, 0.75, 0.4), opacity 0.6s cubic-bezier(0.5, 0, 0.75, 0.4) 1.35s;
-        will-change: transform, opacity;
+        transition: transform 1.6s cubic-bezier(0.5, 0, 0.75, 0.4), opacity 0.55s cubic-bezier(0.5, 0, 0.75, 0.4) 0.95s;
       }
       #cover-stage.descended {
-        transform: translate3d(0, -62%, 0) scale(1.12);
+        transform: translate3d(0, -62%, 0) scale(1.1);
         opacity: 0;
         pointer-events: none;
       }
 
-      /* 2. Cinematic Mist Surge Waves (Video Pembukaan Effect) */
-      .surge-mist-1 {
-        animation: mk-surge 2.1s cubic-bezier(0.4, 0, 0.6, 1) 0s forwards;
-      }
-      .surge-mist-2 {
-        animation: mk-surge 2.5s cubic-bezier(0.4, 0, 0.6, 1) 0.25s forwards;
-      }
-      .surge-mist-3 {
-        animation: mk-surge 2.9s cubic-bezier(0.4, 0, 0.6, 1) 0.55s forwards;
-      }
-      .surge-light-wash {
-        animation: mk-wash 2.5s ease-in-out 0.2s forwards;
-      }
+      /* 2. Cinematic Mist Surge Waves */
+      .surge-mist-1 { animation: mk-surge 1.7s cubic-bezier(0.4, 0, 0.6, 1) 0s forwards; }
+      .surge-mist-2 { animation: mk-surge 1.9s cubic-bezier(0.4, 0, 0.6, 1) 0.2s forwards; }
+      .surge-mist-3 { animation: mk-surge 2.1s cubic-bezier(0.4, 0, 0.6, 1) 0.4s forwards; }
+      .surge-light-wash { animation: mk-wash 1.9s ease-in-out 0.15s forwards; }
 
       @keyframes mk-surge {
         0% { transform: translate3d(0, 110vh, 0); opacity: 0; }
@@ -259,10 +211,9 @@
 
       /* 3. Landed Scene Zoom & Reveal */
       #landed-canvas {
-        transform: scale(1.32) translate3d(0, -6%, 0);
+        transform: scale(1.26) translate3d(0, -5%, 0);
         transform-origin: 50% 55%;
-        transition: transform 3.0s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: transform;
+        transition: transform 2.2s cubic-bezier(0.16, 1, 0.3, 1);
       }
       #landed-canvas.landed {
         transform: scale(1) translate3d(0, 0%, 0);
@@ -272,7 +223,7 @@
       .songket-banner-wrap {
         clip-path: inset(0% 100% 0% 0%);
         opacity: 0.6;
-        transition: clip-path 1.9s cubic-bezier(0.55, 0, 0.25, 1) 1.4s, opacity 1.2s ease 1.4s;
+        transition: clip-path 1.4s cubic-bezier(0.55, 0, 0.25, 1) 0.9s, opacity 1s ease 0.9s;
       }
       .landed .songket-banner-wrap {
         clip-path: inset(0% 0% 0% 0%);
@@ -283,7 +234,7 @@
       .suntiang-hero {
         opacity: 0;
         transform: translate3d(0, 16px, 0) scale(0.9);
-        transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s, transform 1.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s;
+        transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.3s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.3s;
       }
       .landed .suntiang-hero {
         opacity: 1;
@@ -293,9 +244,9 @@
       /* Couple Names De-blur and Glow */
       .names-hero {
         opacity: 0;
-        filter: blur(8px);
+        filter: blur(6px);
         transform: translate3d(0, 8px, 0);
-        transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1) 2.8s, filter 1.6s ease 2.8s, transform 1.6s cubic-bezier(0.16, 1, 0.3, 1) 2.8s;
+        transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s, filter 1.2s ease 1.6s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s;
       }
       .landed .names-hero {
         opacity: 1;
@@ -306,8 +257,8 @@
       /* Pengantin Front rise */
       .pengantin-hero {
         opacity: 0;
-        transform: translate3d(0, 40px, 0);
-        transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1) 3.1s, transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) 3.1s;
+        transform: translate3d(0, 36px, 0);
+        transition: opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1) 1.7s, transform 1.3s cubic-bezier(0.16, 1, 0.3, 1) 1.7s;
       }
       .landed .pengantin-hero {
         opacity: 1;
@@ -318,7 +269,7 @@
       .date-hero {
         opacity: 0;
         transform: translate3d(0, -10px, 0);
-        transition: opacity 1.4s ease 3.2s, transform 1.4s ease 3.2s;
+        transition: opacity 1.1s ease 1.8s, transform 1.1s ease 1.8s;
       }
       .landed .date-hero {
         opacity: 1;
@@ -327,7 +278,7 @@
 
       .scroll-cue {
         opacity: 0;
-        transition: opacity 1s ease 4.0s;
+        transition: opacity 0.9s ease 2.1s;
       }
       .landed .scroll-cue {
         opacity: 1;
@@ -336,13 +287,17 @@
       /* Scroll Reveal Animasi */
       .reveal {
         opacity: 0;
-        transform: translate3d(0, 28px, 0);
-        transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-        will-change: opacity, transform;
+        transform: translate3d(0, 22px, 0);
+        transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .reveal.active {
         opacity: 1;
-        transform: translate3d(0, 0, 0);
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .mk-mist, .mk-flag, .mk-eagle, .mk-glide-wing, .mk-glint, .mk-petal, .mk-float, .mk-sway, .mk-bob, .mk-spin-slow { animation: none !important; }
+        #cover-stage, #landed-canvas, .songket-banner-wrap, .suntiang-hero, .names-hero, .pengantin-hero, .date-hero, .scroll-cue, .reveal { transition-duration: 1ms !important; opacity: 1; transform: none; filter: none; }
       }
 
       /* Custom Scrollbar */
@@ -443,7 +398,7 @@
     <!-- ===================================================================
          HERO SECTION (100SVH): COVER PEMBUKA + LANDED RANAH MINANG SCENE
     ==================================================================== -->
-    <section id="hero" class="relative h-[100svh] min-h-[620px] w-full overflow-hidden bg-[#cfe0ea]">
+    <section id="hero" class="relative h-[100dvh] min-h-[540px] w-full overflow-hidden bg-[#cfe0ea]">
 
       <!-- ===============================================================
            A. THE LANDED SCENE (LEMBAH RANAH MINANG & RUMAH GADANG)
@@ -613,22 +568,22 @@
         </div>
 
         <!-- Cover Header Text -->
-        <div class="relative z-10 pt-[7%] px-6 text-center">
-          <p class="font-caps text-[11px] uppercase tracking-[0.45em] text-mk-red-2 font-bold drop-shadow">
+        <div class="relative z-10 pt-5 sm:pt-[7%] px-4 sm:px-6 text-center">
+          <p class="font-caps text-[10px] sm:text-[11px] uppercase tracking-[0.45em] text-mk-red-2 font-bold drop-shadow">
             Pulang Baralek
           </p>
-          <h1 class="font-display mt-3 text-[2.75rem] font-semibold leading-[0.95] text-mk-ink [text-shadow:0_2px_18px_rgba(255,246,220,0.9)]">
+          <h1 class="font-display mt-2 sm:mt-3 text-3xl sm:text-[2.75rem] font-semibold leading-[0.95] text-mk-ink [text-shadow:0_2px_18px_rgba(255,246,220,0.9)]">
             {{ $primaryNick }}
-            <span class="font-display mx-2 align-middle text-[2rem] font-normal italic text-mk-red">&amp;</span>
+            <span class="font-display mx-2 align-middle text-2xl sm:text-[2rem] font-normal italic text-mk-red">&amp;</span>
             {{ $secondaryNick }}
           </h1>
-          <p class="font-caps mt-3 text-[12px] tracking-[0.32em] text-mk-ink font-semibold">
+          <p class="font-caps mt-2 sm:mt-3 text-[11px] sm:text-[12px] tracking-[0.32em] text-mk-ink font-semibold">
             {{ $dateShort }}
           </p>
         </div>
 
         <!-- Cover Couple Photo in Arched Frame -->
-        <div class="relative z-10 flex justify-center h-[36%] px-6 my-auto">
+        <div class="relative z-10 flex justify-center h-[28%] sm:h-[36%] px-6 my-auto">
           <div class="h-full aspect-[4/5] rounded-t-full rounded-b-xl overflow-hidden border-2 border-mk-gold shadow-2xl p-1 bg-mk-paper/30 backdrop-blur-sm">
             <img src="{{ asset('images/themes/minang/royal/couple-bride.webp') }}"
                  alt="Foto Pengantin"
@@ -637,7 +592,7 @@
         </div>
 
         <!-- Cover Envelope Card (Tamu & Tombol Buka Undangan) -->
-        <div class="relative z-10 px-8 pb-[8%] flex justify-center">
+        <div class="relative z-10 px-4 sm:px-8 pb-5 sm:pb-[8%] flex justify-center">
           <div class="w-full max-w-[310px] overflow-hidden rounded-[16px] bg-[rgba(251,243,228,0.96)] text-center shadow-[0_18px_30px_-12px_rgba(60,30,10,0.55)] border border-mk-gold/40 backdrop-blur-md">
             
             <!-- Songket Top Border -->
@@ -677,22 +632,22 @@
       <!-- Ngarai Sianok Plate Background -->
       <div class="absolute inset-0 pointer-events-none">
         <img src="{{ asset('images/themes/minang/royal/ngarai-plate.webp') }}"
-             alt="Ngarai Sianok"
+             alt="Ngarai Sianok" loading="lazy" decoding="async"
              class="h-full w-full object-cover opacity-80"
              style="object-position: 50% 40%;" />
         <div class="absolute inset-0 bg-gradient-to-b from-[#FBF3E4]/90 via-[#FBF3E4]/40 to-[#FBF3E4]"></div>
 
         <!-- Mists in Canyon -->
         <div class="mk-mist absolute top-[48%] -left-[40%] w-[180%] opacity-80" style="--dur: 40s; --dx: 60px;">
-          <img src="{{ asset('images/themes/minang/royal/kabut-3.webp') }}" alt="" class="w-full h-auto" />
+          <img src="{{ asset('images/themes/minang/royal/kabut-3.webp') }}" alt="" loading="lazy" decoding="async" class="w-full h-auto" />
         </div>
         <div class="mk-mist absolute top-[62%] -left-[30%] w-[160%] opacity-60" style="--dur: 52s; --dx: -50px;">
-          <img src="{{ asset('images/themes/minang/royal/kabut-2.webp') }}" alt="" class="w-full h-auto" />
+          <img src="{{ asset('images/themes/minang/royal/kabut-2.webp') }}" alt="" loading="lazy" decoding="async" class="w-full h-auto" />
         </div>
 
         <!-- Parallax Canyon Rim -->
         <div id="ngarai-rim" class="absolute inset-x-[-12%] bottom-[-4%] transition-transform duration-75">
-          <img src="{{ asset('images/themes/minang/royal/ngarai-rim.webp') }}" alt="" class="h-auto w-full" />
+          <img src="{{ asset('images/themes/minang/royal/ngarai-rim.webp') }}" alt="" loading="lazy" decoding="async" class="h-auto w-full" />
         </div>
       </div>
 
@@ -702,7 +657,7 @@
         <!-- Carano Adat Vessel -->
         <div class="reveal mx-auto mb-4 w-16">
           <img src="{{ asset('images/themes/minang/royal/carano.webp') }}"
-               alt="Carano Adat Minangkabau"
+               alt="Carano Adat Minangkabau" loading="lazy" decoding="async"
                class="w-full h-auto drop-shadow-md mx-auto" />
         </div>
 
@@ -767,12 +722,12 @@
             <!-- Arched Photo Frame -->
             <div class="relative w-44 h-56 rounded-t-full rounded-b-2xl overflow-hidden border-2 border-mk-gold shadow-2xl p-1 bg-mk-paper-2">
               <img src="{{ !empty($evData['bride_photo']) ? asset('storage/' . $evData['bride_photo']) : asset('images/themes/minang/royal/couple-bride.webp') }}"
-                   alt="{{ $secondaryName }}"
+                   alt="{{ $secondaryName }}" loading="lazy" decoding="async"
                    class="h-full w-full object-cover rounded-t-full rounded-b-xl" />
             </div>
 
             <!-- Kaluak Crest Badge -->
-            <img src="{{ asset('images/themes/minang/royal/kaluak-crest.webp') }}" class="w-12 h-auto my-3" alt="Kaluak" />
+            <img src="{{ asset('images/themes/minang/royal/kaluak-crest.webp') }}" loading="lazy" decoding="async" class="w-12 h-auto my-3" alt="Kaluak" />
 
             <span class="font-caps text-[10px] uppercase tracking-[0.25em] text-mk-gold-2 font-bold">Anak Daro (Mempelai Wanita)</span>
             <h3 class="font-display text-2xl font-bold text-mk-ink mt-1">{{ $secondaryName }}</h3>
@@ -798,12 +753,12 @@
             <!-- Arched Photo Frame -->
             <div class="relative w-44 h-56 rounded-t-full rounded-b-2xl overflow-hidden border-2 border-mk-gold shadow-2xl p-1 bg-mk-paper-2">
               <img src="{{ !empty($evData['groom_photo']) ? asset('storage/' . $evData['groom_photo']) : asset('images/themes/minang/royal/couple-groom.webp') }}"
-                   alt="{{ $primaryName }}"
+                   alt="{{ $primaryName }}" loading="lazy" decoding="async"
                    class="h-full w-full object-cover rounded-t-full rounded-b-xl" />
             </div>
 
             <!-- Kaluak Crest Badge -->
-            <img src="{{ asset('images/themes/minang/royal/kaluak-crest.webp') }}" class="w-12 h-auto my-3" alt="Kaluak" />
+            <img src="{{ asset('images/themes/minang/royal/kaluak-crest.webp') }}" loading="lazy" decoding="async" class="w-12 h-auto my-3" alt="Kaluak" />
 
             <span class="font-caps text-[10px] uppercase tracking-[0.25em] text-mk-gold-2 font-bold">Marapulai (Mempelai Pria)</span>
             <h3 class="font-display text-2xl font-bold text-mk-ink mt-1">{{ $primaryName }}</h3>
@@ -856,7 +811,8 @@
 
         <!-- Tombol Google Calendar -->
         <div class="reveal">
-          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ urlencode('Pernikahan ' . $primaryNick . ' & ' . $secondaryNick) }}&dates=20261219T010000Z/20261219T090000Z&details={{ urlencode('Baralek Gadang Adat Minangkabau ' . $primaryName . ' & ' . $secondaryName) }}&location={{ urlencode($s1Venue . ', ' . $s1Address) }}"
+          @php $mkCalDate = str_replace('-', '', $s1Date); @endphp
+          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ urlencode('Pernikahan ' . $primaryNick . ' & ' . $secondaryNick) }}&dates={{ $mkCalDate }}T010000Z/{{ $mkCalDate }}T090000Z&details={{ urlencode('Baralek Gadang Adat Minangkabau ' . $primaryName . ' & ' . $secondaryName) }}&location={{ urlencode($s1Venue . ', ' . $s1Address) }}"
              target="_blank"
              class="inline-flex items-center gap-2 rounded-full bg-mk-paper border border-mk-gold px-6 py-2.5 text-xs font-semibold text-mk-ink shadow-sm hover:bg-mk-gold hover:text-mk-black transition">
             <svg class="w-4 h-4 text-mk-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -1017,7 +973,7 @@
           @foreach($displayGallery as $idx => $gItem)
           <div class="reveal group relative aspect-[4/5] rounded-xl overflow-hidden border border-mk-gold/50 shadow-md cursor-pointer bg-mk-black"
                onclick="openLightbox('{{ $gItem['url'] }}', '{{ $gItem['caption'] }}')">
-            <img src="{{ $gItem['url'] }}" alt="{{ $gItem['caption'] }}"
+            <img src="{{ $gItem['url'] }}" alt="{{ $gItem['caption'] }}" loading="lazy" decoding="async"
                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute inset-0 bg-gradient-to-t from-mk-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
               <span class="text-[10px] text-mk-paper font-cormorant italic line-clamp-1">{{ $gItem['caption'] }}</span>
@@ -1045,7 +1001,7 @@
     ==================================================================== -->
     <section class="relative min-h-[50svh] overflow-hidden border-t border-mk-gold/30">
       <img src="{{ asset('images/themes/minang/royal/pelaminan-plate.webp') }}"
-           alt="Pelaminan Baralek Gadang"
+           alt="Pelaminan Baralek Gadang" loading="lazy" decoding="async"
            class="absolute inset-0 h-full w-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-t from-mk-black via-mk-black/60 to-transparent"></div>
       
@@ -1160,9 +1116,9 @@
       
       <!-- Danau Singkarak Plate & Rumah Gadang Lit -->
       <div class="absolute inset-0 pointer-events-none opacity-60">
-        <img src="{{ asset('images/themes/minang/royal/danau-plate.webp') }}" alt="Danau Singkarak" class="h-full w-full object-cover" />
+        <img src="{{ asset('images/themes/minang/royal/danau-plate.webp') }}" alt="Danau Singkarak" loading="lazy" decoding="async" class="h-full w-full object-cover" />
         <div class="absolute inset-0 bg-gradient-to-t from-[#140A07] via-transparent to-[#140A07]/80"></div>
-        <img src="{{ asset('images/themes/minang/royal/rumahgadang-lit.webp') }}" alt="Rumah Gadang Malam" class="absolute bottom-[2%] left-[10%] w-[80%] h-auto drop-shadow-2xl opacity-75" />
+        <img src="{{ asset('images/themes/minang/royal/rumahgadang-lit.webp') }}" alt="Rumah Gadang Malam" loading="lazy" decoding="async" class="absolute bottom-[2%] left-[10%] w-[80%] h-auto drop-shadow-2xl opacity-75" />
       </div>
 
       <div class="relative z-10 px-6">
@@ -1183,17 +1139,17 @@
          FLOATING BOTTOM DOCK NAVIGATION
     ==================================================================== -->
     <nav id="dock-nav"
-         class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 hidden items-center gap-1.5 rounded-full bg-mk-black/85 backdrop-blur-md px-4 py-2 border border-mk-gold/50 shadow-2xl transition-all duration-500">
-      <a href="#hero" class="px-2.5 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Sampul</a>
-      <a href="#mempelai" class="px-2.5 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Mempelai</a>
-      <a href="#acara" class="px-2.5 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Acara</a>
-      <a href="#galeri" class="px-2.5 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Galeri</a>
-      <a href="#rsvp" class="px-2.5 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Ucapan</a>
+         class="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 hidden w-[92%] max-w-md items-center justify-around gap-1 rounded-full bg-mk-black/85 backdrop-blur-md px-2 py-2 border border-mk-gold/50 shadow-2xl transition-all duration-500">
+      <a href="#hero" class="px-2 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Sampul</a>
+      <a href="#mempelai" class="px-2 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Mempelai</a>
+      <a href="#acara" class="px-2 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Acara</a>
+      <a href="#galeri" class="px-2 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Galeri</a>
+      <a href="#rsvp" class="px-2 py-1 text-[11px] font-caps tracking-wider text-mk-paper hover:text-mk-gold transition">Ucapan</a>
     </nav>
 
     <!-- FLOATING VINYL AUDIO PLAYER -->
     <button id="music-toggle" type="button" aria-label="Toggle Musik"
-            class="fixed bottom-5 right-5 z-40 hidden h-11 w-11 items-center justify-center rounded-full bg-mk-red text-mk-gold-3 border border-mk-gold shadow-2xl transition hover:scale-110 active:scale-95">
+            class="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] right-4 z-40 hidden h-11 w-11 items-center justify-center rounded-full bg-mk-red text-mk-gold-3 border border-mk-gold shadow-2xl transition hover:scale-110 active:scale-95">
       <div id="icon-disc" class="mk-spin-slow">
         <svg class="h-6 w-6 text-mk-gold" fill="currentColor" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -1222,9 +1178,11 @@
   <script>
     // 1. GUGURAN KELOPAK MELATI ALAMI
     function spawnPetals() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const container = document.getElementById('petals-container');
       if (!container) return;
-      for (let i = 0; i < 9; i++) {
+      const count = window.innerWidth < 640 ? 5 : 7;
+      for (let i = 0; i < count; i++) {
         const p = document.createElement('div');
         p.className = 'mk-petal absolute';
         const startX = Math.random() * 100 + 'vw';
@@ -1247,12 +1205,35 @@
     }
     spawnPetals();
 
-    // 2. MUSIK LATAR MINANG (MP3/M4A DENGAN TONE.JS SYNTH FALLBACK)
+    // 2. MUSIK LATAR MINANG (MP3/M4A DENGAN WEB AUDIO API FALLBACK RINGAN)
     const audio = document.getElementById('bg-audio');
     const musicBtn = document.getElementById('music-toggle');
     const iconDisc = document.getElementById('icon-disc');
     const iconMute = document.getElementById('icon-mute');
-    let isPlaying = false;
+    let isPlaying = false, synthCtx = null, synthTimer = null;
+
+    function startAmbientFallback() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!synthCtx) synthCtx = new AC();
+      if (synthCtx.state === 'suspended') synthCtx.resume();
+      const notes = [261.63, 329.63, 392.00, 440.00, 293.66, 392.00, 329.63, 293.66];
+      let step = 0;
+      const playNote = () => {
+        if (!isPlaying || !synthCtx) return;
+        const t = synthCtx.currentTime, osc = synthCtx.createOscillator(), g = synthCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(notes[step++ % notes.length], t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.035, t + 0.15);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+        osc.connect(g); g.connect(synthCtx.destination);
+        osc.start(t); osc.stop(t + 1.5);
+      };
+      playNote();
+      if (synthTimer) clearInterval(synthTimer);
+      synthTimer = setInterval(playNote, 1200);
+    }
 
     async function playMusic() {
       if (audio && audio.src) {
@@ -1264,37 +1245,33 @@
           return;
         } catch(e) {}
       }
-      try {
-        if (typeof Tone !== 'undefined') {
-          await Tone.start();
-          const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-          synth.volume.value = -12;
-          const notes = [['C4','G4'],'E4','G4','A4',['D4','A4'],'G4','E4','D4'];
-          let step = 0;
-          new Tone.Loop(t => {
-            synth.triggerAttackRelease(notes[step % notes.length], '2n', t);
-            step++;
-          }, '2n').start(0);
-          Tone.Transport.start();
-          isPlaying = true;
-          updateIcons();
-        }
-      } catch(e) {}
+      isPlaying = true;
+      updateIcons();
+      startAmbientFallback();
     }
 
     function toggleMusic() {
-      if (audio && audio.src) {
+      if (audio && audio.src && !synthCtx) {
         if (isPlaying) { audio.pause(); isPlaying = false; }
-        else { audio.play(); isPlaying = true; }
+        else { audio.play().catch(() => {}); isPlaying = true; }
         updateIcons();
         return;
       }
-      if (typeof Tone !== 'undefined') {
-        if (isPlaying) { Tone.Transport.pause(); isPlaying = false; }
-        else { Tone.Transport.start(); isPlaying = true; }
-        updateIcons();
+      if (isPlaying) {
+        isPlaying = false;
+        synthCtx?.suspend();
+        if (synthTimer) clearInterval(synthTimer);
+      } else {
+        isPlaying = true;
+        startAmbientFallback();
       }
+      updateIcons();
     }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { audio?.pause(); synthCtx?.suspend(); }
+      else if (isPlaying) { audio?.play().catch(() => {}); synthCtx?.resume(); }
+    });
 
     function updateIcons() {
       if (isPlaying) {
@@ -1308,14 +1285,13 @@
 
     musicBtn?.addEventListener('click', toggleMusic);
 
-    // 3. CINEMATIC OPENING MOTION (SEPERTI VIDEO PEMBUKAAN JANIVA)
+    // 3. CINEMATIC OPENING MOTION
     const coverStage = document.getElementById('cover-stage');
     const mistSurgeStage = document.getElementById('mist-surge-stage');
     const landedCanvas = document.getElementById('landed-canvas');
     const openBtn = document.getElementById('open-btn');
     const dockNav = document.getElementById('dock-nav');
 
-    // Kunci scroll halaman sebelum cover dibuka
     document.body.style.overflow = 'hidden';
 
     let isOpening = false;
@@ -1323,35 +1299,20 @@
       if (isOpening) return;
       isOpening = true;
 
-      // Putar alunan musik Minang
       playMusic();
-
-      // Fase 1: Cover terangkat ke atas secara halus
       coverStage?.classList.add('descended');
+      mistSurgeStage?.classList.remove('hidden');
 
-      // Fase 2: Gelombang Kabut Gunung (Video Pembukaan Motion Surge)
-      if (mistSurgeStage) {
-        mistSurgeStage.classList.remove('hidden');
-      }
-
-      // Fase 3: Pada detik ke-1.9, kamera "mendarat" di Lembah Ranah Minang (Zooming In)
-      setTimeout(() => {
-        landedCanvas?.classList.add('landed');
-      }, 1900);
-
-      // Fase 4: Pada detik ke-3.2, pembukaan selesai: buka kunci scroll & tampilkan navigasi
+      setTimeout(() => { landedCanvas?.classList.add('landed'); }, 1100);
       setTimeout(() => {
         document.body.style.overflow = '';
+        if (coverStage) coverStage.style.display = 'none';
         musicBtn?.classList.remove('hidden');
         musicBtn?.classList.add('flex');
         dockNav?.classList.remove('hidden');
         dockNav?.classList.add('flex');
-        
-        // Hapus elemen kabut pembuka setelah animasi selesai agar ringan
-        if (mistSurgeStage) {
-          mistSurgeStage.classList.add('hidden');
-        }
-      }, 3200);
+      }, 1750);
+      setTimeout(() => { mistSurgeStage?.classList.add('hidden'); }, 2500);
     });
 
     // 4. PARALLAX SCROLL EFFECT PADA NGARAI SIANOK

@@ -2,7 +2,7 @@
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ $invitation->title }} | The Wedding of {{ $invitation->event_data['primary_name'] ?? 'Rozi' }} &amp; {{ $invitation->event_data['secondary_name'] ?? 'Nabila' }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -43,43 +43,26 @@
             overflow: hidden;
         }
 
-        /* Cover Screen Animation */
-        #section-cover {
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s ease;
-        }
-        #section-cover.is-hidden {
-            opacity: 0;
-            transform: translateY(-100%);
-            pointer-events: none;
-            display: none !important;
-        }
-
         /* Subtle Float & Sway */
         @keyframes gentleSway {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50%      { transform: translateY(-8px) rotate(2deg); }
+            50%      { transform: translateY(-6px) rotate(2deg); }
         }
-        .anim-sway {
-            animation: gentleSway 4.5s ease-in-out infinite;
-        }
-
-        @keyframes pulseSoft {
-            0%, 100% { transform: scale(1); }
-            50%      { transform: scale(1.03); }
-        }
-        .anim-pulse {
-            animation: pulseSoft 3s ease-in-out infinite;
-        }
+        .anim-sway { animation: gentleSway 4.5s ease-in-out infinite; }
 
         /* Scroll Reveal */
         .reveal {
             opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translate3d(0, 22px, 0);
+            transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .reveal.revealed {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .anim-sway { animation: none; }
+            .reveal { opacity: 1; transform: none; transition: none; }
         }
 
         /* Custom Scrollbar */
@@ -152,7 +135,7 @@
 @endphp
 
 <body data-event-type="{{ $eventType }}"
-      class="font-sans-body bg-[#FAF4EF] text-[#1E1E1E] antialiased selection:bg-[#9D583D] selection:text-white overflow-x-hidden min-h-screen"
+      class="font-sans-body bg-[#FAF4EF] text-[#1E1E1E] antialiased selection:bg-[#9D583D] selection:text-white overflow-x-clip h-dvh"
       x-data="invitationEngine({
           musicMode: '{{ $invitation->event_data['music_mode'] ?? 'custom' }}',
           musicUrl: '{{ !empty($invitation->event_data['music_file']) ? asset('storage/' . $invitation->event_data['music_file']) : 'https://inv.mehnikah.com/wp-content/uploads/user/7/323945/323945kohptw7e.mp3' }}',
@@ -164,10 +147,15 @@
       x-init="
           document.body.classList.add('overflow-hidden');
           $nextTick(() => {
+              const els = document.querySelectorAll('.reveal');
+              if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+                  els.forEach(el => el.classList.add('revealed'));
+                  return;
+              }
               const obs = new IntersectionObserver((entries) => {
-                  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
-              }, { threshold: 0.12 });
-              document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+                  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
+              }, { threshold: 0.1 });
+              els.forEach(el => obs.observe(el));
           });
       ">
 
@@ -175,9 +163,9 @@
          1. COVER SCREEN TERKUNCI (#section-cover)
          Aesthetic Terracotta & Warm Linen khas Mehnikah
          ========================================================= --}}
-    <div id="section-cover"
-         :class="isOpen ? 'is-hidden' : ''"
-         class="fixed inset-0 z-50 h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center p-6 bg-gradient-to-b from-[#FAF4EF] via-[#F4E8DF] to-[#EEDCCF] border-b border-[#9D583D]/20">
+    <div id="section-cover" data-cover-gate
+         :class="isOpen ? 'is-opening' : ''"
+         class="motion-cover fixed inset-0 z-50 h-dvh w-full overflow-y-auto flex flex-col justify-between items-center text-center bg-gradient-to-b from-[#FAF4EF] via-[#F4E8DF] to-[#EEDCCF] border-b border-[#9D583D]/20">
 
         {{-- Daun Botanical Atas --}}
         <div class="pt-2 flex flex-col items-center">
@@ -197,8 +185,8 @@
         </div>
 
         {{-- Foto Pasangan dalam Arch Frame Terracotta --}}
-        <div class="my-auto w-full max-w-sm flex flex-col items-center space-y-4">
-            <div class="arch-frame w-44 h-60 p-1.5 bg-gradient-to-b from-[#9D583D] via-[#B67358] to-[#FFD8C8] shadow-[0_12px_35px_rgba(157,88,61,0.25)] relative">
+        <div class="my-auto w-full max-w-sm flex flex-col items-center space-y-3 sm:space-y-4">
+            <div class="arch-frame w-36 h-48 sm:w-44 sm:h-60 p-1.5 bg-gradient-to-b from-[#9D583D] via-[#B67358] to-[#FFD8C8] shadow-[0_12px_35px_rgba(157,88,61,0.25)] relative">
                 <div class="w-full h-full arch-frame overflow-hidden bg-white">
                     @if(!empty($coverImg))
                         <img src="{{ asset('storage/' . $coverImg) }}" alt="{{ $invitation->title }}" class="w-full h-full object-cover">
@@ -354,7 +342,7 @@
                 <div class="p-6 rounded-3xl bg-[#FAF4EF] border border-[#9D583D]/15 shadow-sm text-center">
                     <div class="arch-frame w-32 h-44 mx-auto p-1 bg-gradient-to-b from-[#9D583D] to-[#FFD8C8] shadow-md mb-4">
                         <div class="w-full h-full arch-frame overflow-hidden bg-stone-200">
-                            <img src="{{ !empty($invitation->event_data['groom_photo']) ? asset('storage/' . $invitation->event_data['groom_photo']) : 'https://inv.mehnikah.com/wp-content/uploads/2026/09/XagQECOxF1zI9tdTz4yIIvoX7ogk3X1ksv8cRfB8.webp' }}" alt="{{ $primaryName }}" class="w-full h-full object-cover">
+                            <img src="{{ !empty($invitation->event_data['groom_photo']) ? asset('storage/' . $invitation->event_data['groom_photo']) : 'https://inv.mehnikah.com/wp-content/uploads/2026/09/XagQECOxF1zI9tdTz4yIIvoX7ogk3X1ksv8cRfB8.webp' }}" alt="{{ $primaryName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                         </div>
                     </div>
                     <span class="text-[10px] font-sans-jura tracking-widest uppercase text-[#9D583D] font-bold block mb-1">The Groom</span>
@@ -380,7 +368,7 @@
                 <div class="p-6 rounded-3xl bg-[#FAF4EF] border border-[#9D583D]/15 shadow-sm text-center">
                     <div class="arch-frame w-32 h-44 mx-auto p-1 bg-gradient-to-b from-[#9D583D] to-[#FFD8C8] shadow-md mb-4">
                         <div class="w-full h-full arch-frame overflow-hidden bg-stone-200">
-                            <img src="{{ !empty($invitation->event_data['bride_photo']) ? asset('storage/' . $invitation->event_data['bride_photo']) : 'https://inv.mehnikah.com/wp-content/uploads/2026/09/xfozkVzJRL2rccH4GGOsLoEIK0ihq1sxliQUifPV.webp' }}" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
+                            <img src="{{ !empty($invitation->event_data['bride_photo']) ? asset('storage/' . $invitation->event_data['bride_photo']) : 'https://inv.mehnikah.com/wp-content/uploads/2026/09/xfozkVzJRL2rccH4GGOsLoEIK0ihq1sxliQUifPV.webp' }}" alt="{{ $secondaryName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                         </div>
                     </div>
                     <span class="text-[10px] font-sans-jura tracking-widest uppercase text-[#9D583D] font-bold block mb-1">The Bride</span>
@@ -500,7 +488,7 @@
                         {{-- Foto Milestone Cerita --}}
                         @if(!empty($st['photo']))
                         <div class="w-full h-48 sm:h-52 rounded-xl overflow-hidden bg-stone-200 shadow-inner">
-                            <img src="{{ $st['photo'] }}" alt="{{ $st['title'] ?? 'Love Story' }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <img src="{{ $st['photo'] }}" alt="{{ $st['title'] ?? 'Love Story' }}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         @endif
 
@@ -540,7 +528,7 @@
                 @foreach($gallery as $photo)
                     <div class="arch-frame aspect-[3/4] overflow-hidden bg-stone-200 border border-[#9D583D]/20 shadow-md cursor-pointer group"
                          @click="openLightbox('{{ asset('storage/' . $photo) }}')">
-                        <img src="{{ asset('storage/' . $photo) }}" alt="Foto Galeri" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <img src="{{ asset('storage/' . $photo) }}" alt="Foto Galeri" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
                 @endforeach
             </div>

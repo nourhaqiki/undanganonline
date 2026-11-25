@@ -1,2 +1,19 @@
 @import "tailwindcss";
 @import "./motion.css";
+
+@theme {
+    --color-mk-paper: #FBF3E4;
+    --color-mk-paper-2: #F3E6CF;
+    --color-mk-paper-3: #E4D2B0;
+    --color-mk-red: #9E1B22;
+    --color-mk-red-2: #7A1218;
+    --color-mk-black: #1E1612;
+    --color-mk-wood: #2E1912;
+    --color-mk-gold: #C9A227;
+    --color-mk-gold-2: #9A7514;
+    --color-mk-gold-3: #F1D98A;
+    --color-mk-terra: #B5643C;
+    --color-mk-green: #4E7A4A;
+    --color-mk-ink: #2A1D17;
+    --color-mk-ink-2: #6B5446;
+}

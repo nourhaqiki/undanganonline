@@ -1,62 +1,162 @@
+/* ========================================
+   SHARED MOTION & RESPONSIVE SYSTEM
+   ======================================== */
+
 @layer components {
-    .motion-cover { transition: transform 900ms cubic-bezier(.76, 0, .24, 1), opacity 900ms cubic-bezier(.76, 0, .24, 1); will-change: transform, opacity; }
-    .motion-cover > * { transition: transform 900ms cubic-bezier(.76, 0, .24, 1), opacity 900ms cubic-bezier(.76, 0, .24, 1); }
-    .motion-cover.is-opening { opacity: 0; pointer-events: none; transform: translate3d(0, -100%, 0); }
-    .motion-cover.is-opening > * { opacity: 0; transform: scale3d(1.04, 1.04, 1); }
-    [data-bottom-nav], [data-floating-player] { transition: transform 700ms cubic-bezier(.22, 1, .36, 1), opacity 700ms cubic-bezier(.22, 1, .36, 1); }
-    .invitation-open [data-bottom-nav], .invitation-open [data-floating-player] { opacity: 1; transform: translateY(0); }
-    .invitation-nav-item { align-items: center; display: flex; flex-direction: column; gap: .125rem; min-height: 44px; min-width: 44px; border-radius: 9999px; padding: .375rem .55rem; color: #44403c; cursor: pointer; font-size: 10px; font-weight: 700; position: relative; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
-    .invitation-nav-item::before { background: rgba(120, 53, 15, .12); border-radius: inherit; content: ''; inset: 0; opacity: 0; position: absolute; transition: opacity 220ms cubic-bezier(.22, 1, .36, 1); }
-    .invitation-nav-item span, .invitation-nav-item svg { position: relative; z-index: 1; }
-    .invitation-nav-item svg { fill: none; height: 16px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; width: 16px; }
-    .invitation-nav-item:hover::before, .invitation-nav-item:focus-visible::before, .invitation-nav-item.is-active::before { opacity: 1; }
-    .invitation-nav-item:hover, .invitation-nav-item:focus-visible, .invitation-nav-item.is-active { color: #78350f; }
-    .invitation-nav-item:active { transform: scale3d(.96, .96, 1); }
-    [data-copy-toast] { position: fixed; top: 1rem; left: 50%; z-index: 60; opacity: 0; pointer-events: none; transform: translate3d(-50%, -20px, 0); transition: transform 420ms cubic-bezier(.22, 1.4, .36, 1), opacity 240ms cubic-bezier(.22, 1, .36, 1); }
-    [data-copy-toast].is-visible { opacity: 1; transform: translate3d(-50%, 0, 0); }
-    .invitation-photo-arch, .invitation-photo-oval { box-shadow: 0 0 0 1px rgba(255, 255, 255, .7), 0 0 0 5px rgba(255, 255, 255, .18); }
+
+    /* --- Cover Gate Transition --- */
+    .motion-cover {
+        height: 100dvh;
+        overscroll-behavior: contain;
+        padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+        transition: transform 800ms cubic-bezier(.22, 1, .36, 1),
+                    opacity 650ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .motion-cover.is-opening {
+        opacity: 0;
+        pointer-events: none;
+        transform: translate3d(0, -100%, 0);
+    }
+
+    /* --- Bottom Nav & Floating Player --- */
+    [data-bottom-nav] {
+        bottom: max(.75rem, env(safe-area-inset-bottom));
+        transition: transform 550ms cubic-bezier(.22, 1, .36, 1),
+                    opacity 450ms ease;
+    }
+    [data-floating-player] {
+        bottom: calc(4.75rem + env(safe-area-inset-bottom));
+        transition: transform 550ms cubic-bezier(.22, 1, .36, 1),
+                    opacity 450ms ease;
+    }
+    .invitation-open [data-bottom-nav],
+    .invitation-open [data-floating-player] {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* --- Bottom Nav Items --- */
+    .invitation-nav-item {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-height: 44px;
+        min-width: 44px;
+        border-radius: 9999px;
+        padding: 6px 8px;
+        color: #44403c;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 700;
+        position: relative;
+        transition: color 180ms ease, transform 180ms ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .invitation-nav-item::before {
+        background: rgba(120, 53, 15, .12);
+        border-radius: inherit;
+        content: '';
+        inset: 0;
+        opacity: 0;
+        position: absolute;
+        transition: opacity 180ms ease;
+    }
+    .invitation-nav-item span,
+    .invitation-nav-item svg { position: relative; z-index: 1; }
+    .invitation-nav-item svg {
+        fill: none; height: 16px; width: 16px;
+        stroke: currentColor; stroke-linecap: round;
+        stroke-linejoin: round; stroke-width: 1.8;
+    }
+    .invitation-nav-item:hover::before,
+    .invitation-nav-item:focus-visible::before,
+    .invitation-nav-item.is-active::before { opacity: 1; }
+    .invitation-nav-item:hover,
+    .invitation-nav-item:focus-visible,
+    .invitation-nav-item.is-active { color: #78350f; }
+    .invitation-nav-item:active { transform: scale(.95); }
+
+    /* --- Copy Toast --- */
+    [data-copy-toast] {
+        position: fixed; top: max(1rem, env(safe-area-inset-top)); left: 50%; z-index: 60;
+        opacity: 0; pointer-events: none;
+        transform: translate(-50%, -16px);
+        transition: transform 350ms cubic-bezier(.22, 1, .36, 1),
+                    opacity 220ms ease;
+    }
+    [data-copy-toast].is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    /* --- Photo Frame Styles --- */
+    .invitation-photo-arch,
+    .invitation-photo-oval {
+        box-shadow: 0 0 0 1px rgba(255,255,255,.7),
+                    0 0 0 5px rgba(255,255,255,.18);
+    }
     .invitation-photo-arch { border-radius: 9999px 9999px 0 0; }
     .invitation-photo-oval { border-radius: 50%; }
-    .motion-ready [data-reveal] { opacity: 0; transform: translate3d(0, 28px, 0); transition: transform 900ms cubic-bezier(.22, 1, .36, 1), opacity 900ms cubic-bezier(.22, 1, .36, 1); }
-    .motion-ready [data-reveal="zoom-soft"] { transform: scale3d(.94, .94, 1); }
-    .motion-ready [data-reveal="mask-reveal"] { transform: translate3d(0, 100%, 0); }
-    .motion-ready [data-reveal][data-revealed="true"] { opacity: 1; transform: translate3d(0, 0, 0); }
+
+    /* --- Scroll Reveal (Shared .reveal-on-scroll & [data-reveal]) --- */
+    .motion-ready [data-reveal] {
+        opacity: 0;
+        transform: translate3d(0, 22px, 0);
+        transition: transform 700ms cubic-bezier(.22, 1, .36, 1),
+                    opacity 700ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .motion-ready [data-reveal="zoom-soft"] {
+        transform: scale(.96);
+    }
+    .motion-ready [data-reveal][data-revealed="true"] {
+        opacity: 1;
+        transform: none;
+    }
 }
 
-[data-butterfly-container] { inset: 0; pointer-events: none; position: fixed; z-index: 40; }
-.butterfly-flight-path { opacity: var(--butterfly-opacity); pointer-events: none; position: absolute; width: var(--butterfly-size); will-change: transform, opacity; }
-.butterfly-body-tilt { width: 100%; will-change: transform; }
-.butterfly-wings { display: block; overflow: visible; width: 100%; }
-.wing-left, .wing-right { transform-box: fill-box; transform-origin: center; }
+/* --- Floral Ornaments --- */
+.floral-ornament {
+    color: rgba(251, 191, 36, .25);
+    pointer-events: none; position: fixed;
+    width: 6.5rem; z-index: 5;
+}
+.floral-ornament--top { left: 0; top: 0; }
+.floral-ornament--bottom { bottom: 0; right: 0; }
 
 @media (prefers-reduced-motion: no-preference) {
-    .invitation-open [data-music-disc].is-playing { animation: vinyl-spin 8s linear infinite; }
-    .butterfly-flight-path--one { animation: butterfly-flight-one 17s cubic-bezier(.42, 0, .58, 1) infinite; }
-    .butterfly-flight-path--two { animation: butterfly-flight-two 19s cubic-bezier(.42, 0, .58, 1) infinite; }
-    .butterfly-flight-path--three { animation: butterfly-flight-three 17s cubic-bezier(.42, 0, .58, 1) infinite; }
-    .butterfly-body-tilt { animation: butterfly-body var(--body-duration) cubic-bezier(.42, 0, .58, 1) infinite; }
-    .wing-left { animation: wing-left var(--flap-duration) cubic-bezier(.45, .05, .55, .95) infinite alternate; }
-    .wing-right { animation: wing-right var(--flap-duration) cubic-bezier(.45, .05, .55, .95) infinite alternate-reverse; }
-    .floral-ornament .leaf-back { animation: botanical-back 4.5s cubic-bezier(.37, 0, .63, 1) infinite alternate; transform-box: fill-box; transform-origin: bottom left; }
-    .floral-ornament .flower-main { animation: botanical-main 5.8s cubic-bezier(.37, 0, .63, 1) infinite alternate; transform-box: fill-box; transform-origin: bottom left; }
-    .floral-ornament .leaf-front { animation: botanical-front 7.1s cubic-bezier(.37, 0, .63, 1) infinite alternate; transform-box: fill-box; transform-origin: bottom left; }
+    .invitation-open [data-music-disc].is-playing {
+        animation: vinyl-spin 8s linear infinite;
+    }
+    .floral-ornament .leaf-back {
+        animation: flora-back 4.5s ease-in-out infinite alternate;
+        transform-box: fill-box; transform-origin: bottom left;
+    }
+    .floral-ornament .flower-main {
+        animation: flora-main 5.8s ease-in-out infinite alternate;
+        transform-box: fill-box; transform-origin: bottom left;
+    }
+    .floral-ornament .leaf-front {
+        animation: flora-front 7s ease-in-out infinite alternate;
+        transform-box: fill-box; transform-origin: bottom left;
+    }
 }
 
-.floral-ornament { color: rgba(251, 191, 36, .32); pointer-events: none; position: absolute; width: 7.5rem; z-index: 1; }
-.floral-ornament--top { left: 0; top: 0; transform-origin: bottom left; }
-.floral-ornament--bottom { bottom: 0; right: 0; transform-origin: top right; }
-
 @keyframes vinyl-spin { to { transform: rotate(360deg); } }
-@keyframes butterfly-flight-one { 0% { transform: translate3d(-12vw, 68vh, 0); } 25% { transform: translate3d(28vw, 35vh, 0); } 52% { transform: translate3d(58vw, 58vh, 0); } 78% { transform: translate3d(82vw, 24vh, 0); } 100% { transform: translate3d(112vw, 46vh, 0); } }
-@keyframes butterfly-flight-two { 0% { transform: translate3d(108vw, 20vh, 0); } 27% { transform: translate3d(70vw, 48vh, 0); } 54% { transform: translate3d(42vw, 25vh, 0); } 80% { transform: translate3d(12vw, 64vh, 0); } 100% { transform: translate3d(-12vw, 36vh, 0); } }
-@keyframes butterfly-flight-three { 0% { transform: translate3d(-10vw, 38vh, 0); } 30% { transform: translate3d(22vw, 64vh, 0); } 58% { transform: translate3d(54vw, 30vh, 0); } 82% { transform: translate3d(84vw, 51vh, 0); } 100% { transform: translate3d(110vw, 19vh, 0); } }
-@keyframes butterfly-body { 0%, 100% { transform: translate3d(0, 4px, 0) rotateZ(-12deg); } 50% { transform: translate3d(0, -4px, 0) rotateZ(12deg); } }
-@keyframes wing-left { from { transform: perspective(400px) rotateY(-65deg); } to { transform: perspective(400px) rotateY(20deg); } }
-@keyframes wing-right { from { transform: perspective(400px) rotateY(65deg); } to { transform: perspective(400px) rotateY(-20deg); } }
-@keyframes botanical-back { from { transform: rotate(-2.5deg); } to { transform: rotate(3.5deg); } }
-@keyframes botanical-main { from { transform: rotate(2.5deg); } to { transform: rotate(-2deg); } }
-@keyframes botanical-front { from { transform: rotate(-1.5deg); } to { transform: rotate(3deg); } }
+@keyframes flora-back  { from { transform: rotate(-2.5deg); } to { transform: rotate(3.5deg); } }
+@keyframes flora-main  { from { transform: rotate(2.5deg); }  to { transform: rotate(-2deg); } }
+@keyframes flora-front { from { transform: rotate(-1.5deg); } to { transform: rotate(3deg); } }
 
 @media (prefers-reduced-motion: reduce) {
-    .motion-cover, .motion-cover > *, [data-bottom-nav], [data-floating-player], [data-copy-toast] { transition-duration: 1ms; }
+    .motion-cover,
+    [data-bottom-nav],
+    [data-floating-player],
+    [data-copy-toast] { transition-duration: 1ms !important; }
+    .floral-ornament .leaf-back,
+    .floral-ornament .flower-main,
+    .floral-ornament .leaf-front { animation: none !important; }
+}
+
+@media (max-width: 360px) {
+    .floral-ornament { width: 4.75rem; }
 }

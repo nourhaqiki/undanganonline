@@ -2,7 +2,7 @@
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ $invitation->title }} | Undangan Adat Jawa</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -23,7 +23,7 @@
     </style>
 </head>
 @php $eventType = match ($invitation->category) { 'pernikahan' => 'wedding', 'tunangan' => 'engagement', default => $invitation->category }; @endphp
-<body data-event-type="{{ $eventType }}" class="font-jawa-body bg-[#231512] text-[#FAF3E0] overflow-x-hidden overflow-hidden h-screen antialiased selection:bg-[#D4AF37] selection:text-[#231512]"
+<body data-event-type="{{ $eventType }}" class="font-jawa-body bg-[#231512] text-[#FAF3E0] overflow-x-clip overflow-hidden h-dvh antialiased selection:bg-[#D4AF37] selection:text-[#231512]"
       x-data="invitationEngine({
           musicMode: '{{ $invitation->event_data['music_mode'] ?? 'ambient' }}',
           musicUrl: '{{ !empty($invitation->event_data['music_file']) ? asset('storage/' . $invitation->event_data['music_file']) : '' }}',
@@ -182,7 +182,7 @@
                 <div class="p-5 rounded-2xl bg-[#3E2723]/50 border border-[#D4AF37]/30 text-center">
                     @if(!empty($invitation->event_data['groom_photo']))
                         <div class="w-32 h-40 mx-auto mb-3 rounded-t-full rounded-b-xl overflow-hidden border-2 border-[#D4AF37] p-0.5 bg-[#241411]">
-                            <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $invitation->event_data['primary_name'] }}" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
+                            <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $invitation->event_data['primary_name'] }}" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
                         </div>
                     @endif
                     <h3 class="font-jawa-title text-2xl font-bold text-[#FAF3E0]">{{ $invitation->event_data['primary_name'] }}</h3>
@@ -202,7 +202,7 @@
                 <div class="p-5 rounded-2xl bg-[#3E2723]/50 border border-[#D4AF37]/30 text-center">
                     @if(!empty($invitation->event_data['bride_photo']))
                         <div class="w-32 h-40 mx-auto mb-3 rounded-t-full rounded-b-xl overflow-hidden border-2 border-[#D4AF37] p-0.5 bg-[#241411]">
-                            <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $invitation->event_data['secondary_name'] }}" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
+                            <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $invitation->event_data['secondary_name'] }}" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-t-full rounded-b-lg">
                         </div>
                     @endif
                     <h3 class="font-jawa-title text-2xl font-bold text-[#FAF3E0]">{{ $invitation->event_data['secondary_name'] }}</h3>
@@ -308,7 +308,7 @@
                 @foreach($invitation->event_data['gallery_images'] as $photo)
                     <div class="aspect-square rounded-2xl overflow-hidden bg-[#241411] border border-[#D4AF37]/30 cursor-pointer group shadow-lg p-1"
                          @click="openLightbox('{{ asset('storage/' . $photo) }}')">
-                        <img src="{{ asset('storage/' . $photo) }}" alt="Foto Galeri" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition duration-500">
+                        <img src="{{ asset('storage/' . $photo) }}" alt="Foto Galeri" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition duration-500">
                     </div>
                 @endforeach
             </div>
@@ -433,6 +433,5 @@
     </main>
 
     @include('themes.partials.engine')
-    @include('themes.partials.butterflies')
 </body>
 </html>

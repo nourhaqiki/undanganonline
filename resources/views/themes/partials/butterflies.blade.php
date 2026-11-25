@@ -6,17 +6,17 @@
 <div data-butterfly-container aria-hidden="true" class="butterfly-flight-stage"></div>
 
 <style>
-    /* Butterfly Flight Stage (Selalu di atas background/konten, di bawah modal/lightbox) */
+    /* Butterfly Flight Stage */
     .butterfly-flight-stage {
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        pointer-events: none !important;
-        z-index: 45 !important;
-        overflow: hidden !important;
-        perspective: 900px !important;
-        user-select: none !important;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 45;
+        overflow: hidden;
+        perspective: 900px;
+        user-select: none;
     }
 
     .bf-creature {
@@ -33,21 +33,14 @@
         z-index: 45;
     }
 
-    .bf-scaler {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        transform-style: preserve-3d;
-    }
-
+    .bf-scaler,
     .bf-body-3d {
-        position: relative;
         width: 100%;
         height: 100%;
+        position: relative;
         transform-style: preserve-3d;
     }
 
-    /* Central Body (Kepala, Toraks, Abdomen, Antena) */
     .bf-torso {
         position: absolute;
         left: 50%;
@@ -56,15 +49,9 @@
         height: 42px;
         transform: translate(-50%, -50%);
         z-index: 3;
-        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
     }
-    .bf-torso svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
+    .bf-torso svg { width: 100%; height: 100%; display: block; }
 
-    /* 3D Hinged Wings (Sayap Kiri & Kanan) */
     .bf-wing {
         position: absolute;
         top: 50%;
@@ -72,28 +59,11 @@
         height: 56px;
         margin-top: -28px;
         transform-style: preserve-3d;
-        will-change: transform;
     }
 
-    .bf-wing-left {
-        right: 50%;
-        margin-right: -2px;
-        transform-origin: 100% 46%;
-    }
-
-    .bf-wing-right {
-        left: 50%;
-        margin-left: -2px;
-        transform-origin: 0% 46%;
-    }
-
-    .bf-wing svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-        overflow: visible;
-        filter: drop-shadow(0 2px 5px rgba(0,0,0,0.22));
-    }
+    .bf-wing-left { right: 50%; margin-right: -2px; transform-origin: 100% 46%; }
+    .bf-wing-right { left: 50%; margin-left: -2px; transform-origin: 0% 46%; }
+    .bf-wing svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
     /* Animasi Kepakan Sayap (Fluttering Cepat & Natural) */
     .bf-creature.is-flapping .bf-wing-left {
@@ -123,12 +93,8 @@
         transition: transform 0.28s ease-out;
     }
 
-    /* Depth of Field tiers */
-    .bf-creature.is-depth-bg {
-        filter: blur(0.5px);
-    }
-    .bf-creature.is-depth-fg {
-        filter: drop-shadow(0 3px 8px rgba(0,0,0,0.35));
+    @media (prefers-reduced-motion: reduce) {
+        .butterfly-flight-stage { display: none; }
     }
 </style>
 
@@ -137,6 +103,7 @@
     'use strict';
 
     function initButterflies() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const container = document.querySelector('[data-butterfly-container]');
         if (!container || container.dataset.initialized === 'true') return;
         container.dataset.initialized = 'true';
@@ -185,8 +152,8 @@
             H = window.innerHeight || document.documentElement.clientHeight || 640;
         }, { passive: true });
 
-        // Jumlah kupu-kupu: 5 di HP / Mobile, 7 di Desktop
-        const COUNT = W < 640 ? 5 : 7;
+        // Jumlah kupu-kupu: 4 di HP / Mobile, 6 di Desktop (enteng & mulus)
+        const COUNT = W < 640 ? 4 : 6;
         const creatures = [];
 
         // Interaksi sentuh / kursor

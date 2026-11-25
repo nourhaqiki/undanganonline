@@ -2,7 +2,7 @@
 <html lang="id" class="scroll-smooth h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ $invitation->title }} | The Premiere of {{ $invitation->event_data['primary_name'] ?? 'Mempelai 1' }} &amp; {{ $invitation->event_data['secondary_name'] ?? 'Mempelai 2' }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -125,9 +125,8 @@
 
         /* Cover Screen Handover */
         #section-cover {
-            transition: transform 1.1s cubic-bezier(0.77, 0, 0.175, 1),
-                        opacity 0.9s cubic-bezier(0.77, 0, 0.175, 1);
-            will-change: transform, opacity;
+            transition: transform 900ms cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 700ms cubic-bezier(0.4, 0, 0.2, 1);
         }
         #section-cover.is-leaving {
             transform: translateY(-100%);
@@ -257,17 +256,23 @@
           activeGalleryPhoto: '',
           galleryModal: false,
           openPremiere() {
+              if (this.isGateLeaving || this.isOpen) return;
               this.isShutterFlash = true;
               this.playMusic(0);
 
               setTimeout(() => {
                   this.isGateLeaving = true;
-              }, 300);
+              }, 260);
 
               setTimeout(() => {
-                  this.openInvitation();
+                  this.isOpen = true;
+                  document.body.classList.remove('overflow-hidden', 'h-screen', 'h-dvh');
+                  document.body.classList.add('invitation-open');
+                  this.fadeMusicIn();
                   this.isShutterFlash = false;
-              }, 1000);
+                  const gate = document.getElementById('section-cover');
+                  if (gate) gate.style.display = 'none';
+              }, 1150);
           },
           openFilmPhoto(src) {
               this.activeGalleryPhoto = src;
@@ -311,7 +316,7 @@
     <div id="section-cover"
          :class="{ 'is-leaving': isGateLeaving || isOpen }"
          :inert="isGateLeaving || isOpen"
-         class="fixed inset-0 z-50 h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center bg-[#090909] text-[#FAF7EF] p-6 bg-film-grain select-none">
+         class="fixed inset-0 z-50 h-dvh w-full overflow-y-auto overflow-x-hidden flex flex-col justify-between items-center text-center bg-[#090909] text-[#FAF7EF] p-4 sm:p-6 bg-film-grain select-none">
 
         {{-- Vignette & Ambient Radial Glow --}}
         <div class="absolute inset-0 vintage-vignette pointer-events-none z-0"></div>
@@ -346,7 +351,7 @@
         </div>
 
         {{-- Center Content: Movie Title & Scalloped Guest Ticket --}}
-        <div class="cover-copy relative z-20 my-auto w-full max-w-sm flex flex-col items-center space-y-6">
+        <div class="cover-copy relative z-20 my-auto w-full max-w-sm flex flex-col items-center space-y-4 sm:space-y-6">
             {{-- Stamped Film Frame Label --}}
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#FAF7EF]/25 bg-black/40 font-mono-film text-[10px] tracking-widest text-[#FAF7EF]/75">
                 <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
@@ -604,7 +609,7 @@
                 </div>
                 @if(!empty($invitation->event_data['groom_photo']))
                 <div class="w-40 h-52 mx-auto rounded-xl overflow-hidden border border-[#C5A059]/60 shadow-lg">
-                    <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $primaryName }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $primaryName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                 </div>
                 @endif
                 <div>
@@ -627,7 +632,7 @@
                 </div>
                 @if(!empty($invitation->event_data['bride_photo']))
                 <div class="w-40 h-52 mx-auto rounded-xl overflow-hidden border border-[#C5A059]/60 shadow-lg">
-                    <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $secondaryName }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $secondaryName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                 </div>
                 @endif
                 <div>
@@ -908,7 +913,7 @@
 
                     <div>
                         <span class="font-mono-film text-[9px] text-[#FAF7EF]/50 uppercase tracking-widest block">NOMOR REKENING</span>
-                        <span class="font-mono-film text-xl font-bold text-white tracking-widest block pt-0.5" id="bank-acc-{{ $idx }}">
+                        <span class="font-mono-film text-base sm:text-xl font-bold text-white tracking-widest block pt-0.5 break-all" id="bank-acc-{{ $idx }}">
                             {{ $g['account_number'] ?? '' }}
                         </span>
                         <p class="font-grotesk text-xs text-[#FAF7EF]/75 mt-0.5">
@@ -964,7 +969,7 @@
     {{-- =====================================================
          FLOATING CINEMA DOCK CONTROLS (NAVIGASI MELAYANG)
          ===================================================== --}}
-    <div class="fixed bottom-4 inset-x-0 mx-auto max-w-xs z-40 px-3 py-2 rounded-full bg-black/85 border border-white/20 backdrop-blur-md shadow-2xl flex items-center justify-around text-xs font-grotesk text-[#FAF7EF]/80"
+    <div class="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] inset-x-0 mx-auto w-[92%] max-w-xs z-40 px-3 py-2 rounded-full bg-black/85 border border-white/20 backdrop-blur-md shadow-2xl flex items-center justify-around text-xs font-grotesk text-[#FAF7EF]/80"
          x-show="isOpen" x-cloak>
         <a href="#section-top" class="hover:text-white px-2 py-1">Top</a>
         <a href="#profil" class="hover:text-white px-2 py-1">Cast</a>

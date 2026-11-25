@@ -2,7 +2,7 @@
 <html lang="id" class="scroll-smooth h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ $invitation->title }} | The Wedding of {{ $invitation->event_data['primary_name'] ?? 'Arya' }} &amp; {{ $invitation->event_data['secondary_name'] ?? 'Laras' }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -145,13 +145,17 @@
         /* Natural Scroll Reveal */
         .reveal {
             opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
+            transform: translate3d(0, 22px, 0);
+            transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .reveal.revealed {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .curtain-wing-left, .curtain-wing-right, .curtain-swag-top, .curtain-chandelier, .cover-content, .stage-gold-glow, main#section-top { transition-duration: 1ms !important; }
+            .animate-spin-slow, .animate-candle, .pulse-gold { animation: none !important; }
+            .reveal { opacity: 1; transform: none; transition: none; }
         }
 
         /* Spinning Vinyl Record */
@@ -288,26 +292,31 @@
           openWithToast() {
               if (this.isOpening) return;
               this.isOpening = true;
+              this.curtainOpened = true;
               this.playMusic(0);
 
-              // 1. Pemicu terbukanya tirai teater beludru megah
-              this.curtainOpened = true;
-
-              // 2. Waktu animasi tirai tersibak (1.35 detik) lalu panggung utama terbuka mulus
               setTimeout(() => {
-                  this.openInvitation();
+                  this.isOpen = true;
+                  document.body.classList.remove('overflow-hidden', 'h-screen', 'h-dvh');
+                  document.body.classList.add('invitation-open');
+                  this.fadeMusicIn();
                   this.showMusicToast = true;
-                  setTimeout(() => { this.showMusicToast = false; }, 6000);
-              }, 1350);
+                  setTimeout(() => { this.showMusicToast = false; }, 5000);
+              }, 1250);
           }
       }"
       x-init="
           document.body.classList.add('overflow-hidden');
           $nextTick(() => {
+              const els = document.querySelectorAll('.reveal');
+              if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+                  els.forEach(el => el.classList.add('revealed'));
+                  return;
+              }
               const obs = new IntersectionObserver((entries) => {
-                  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
-              }, { threshold: 0.12 });
-              document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+                  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
+              }, { threshold: 0.1 });
+              els.forEach(el => obs.observe(el));
           });
       ">
 
@@ -321,7 +330,7 @@
          ========================================================= --}}
     <div id="section-cover"
          :class="{ 'curtains-opened': curtainOpened, 'is-hidden': isOpen }"
-         class="fixed inset-0 z-50 h-dvh w-full overflow-hidden flex flex-col justify-between items-center text-center bg-[#23060C] text-[#FAF5EE]">
+         class="fixed inset-0 z-50 h-dvh w-full overflow-y-auto overflow-x-hidden flex flex-col justify-between items-center text-center bg-[#23060C] text-[#FAF5EE]">
 
         {{-- Background Deep Velvet Lighting --}}
         <div class="absolute inset-0 bg-gradient-to-b from-[#3D0B16]/95 via-[#22050B] to-[#120205] z-0"></div>
@@ -383,7 +392,7 @@
 
         {{-- Crystal Chandelier (Naik ke atas plafon teater saat tirai terbuka) --}}
         <div class="curtain-chandelier absolute top-1 inset-x-0 mx-auto z-35 flex flex-col items-center pointer-events-none">
-            <div class="animate-candle -mt-2 w-44 sm:w-52 h-36 flex items-center justify-center">
+            <div class="animate-candle -mt-2 w-36 sm:w-52 h-28 sm:h-36 flex items-center justify-center">
                 <svg viewBox="0 0 160 120" class="w-full h-full text-[#E8CF9B]" fill="currentColor">
                     <!-- Chain & Top Ring -->
                     <line x1="80" y1="0" x2="80" y2="28" stroke="#C5A059" stroke-width="2"/>
@@ -415,7 +424,7 @@
         </div>
 
         {{-- Center Content: Title, Names, Date & Guest Card --}}
-        <div class="cover-content relative z-25 my-auto w-full max-w-sm px-6 flex flex-col items-center space-y-5">
+        <div class="cover-content relative z-25 my-auto w-full max-w-sm px-4 sm:px-6 flex flex-col items-center space-y-3 sm:space-y-5">
             {{-- Wedding Label --}}
             <div class="flex items-center gap-3">
                 <span class="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#C5A059]"></span>
@@ -681,11 +690,11 @@
                         {{-- Photo Masked in Oval --}}
                         <div class="w-[148px] h-[208px] rounded-[50%] overflow-hidden z-0 bg-[#FAF5EE] shadow-inner">
                             @if(!empty($invitation->event_data['groom_photo']))
-                                <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $primaryFullName }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/' . $invitation->event_data['groom_photo']) }}" alt="{{ $primaryFullName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             @elseif(!empty($coverImg))
-                                <img src="{{ asset('storage/' . $coverImg) }}" alt="{{ $primaryFullName }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/' . $coverImg) }}" alt="{{ $primaryFullName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             @else
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" alt="{{ $primaryFullName }}" class="w-full h-full object-cover filter contrast-[1.05]">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" alt="{{ $primaryFullName }}" loading="lazy" decoding="async" class="w-full h-full object-cover filter contrast-[1.05]">
                             @endif
                         </div>
                     </div>
@@ -734,11 +743,11 @@
 
                         <div class="w-[148px] h-[208px] rounded-[50%] overflow-hidden z-0 bg-[#FAF5EE] shadow-inner">
                             @if(!empty($invitation->event_data['bride_photo']))
-                                <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $secondaryFullName }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/' . $invitation->event_data['bride_photo']) }}" alt="{{ $secondaryFullName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             @elseif(!empty($gallery[0]))
-                                <img src="{{ asset('storage/' . $gallery[0]) }}" alt="{{ $secondaryFullName }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/' . $gallery[0]) }}" alt="{{ $secondaryFullName }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             @else
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" alt="{{ $secondaryFullName }}" class="w-full h-full object-cover filter contrast-[1.05]">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" alt="{{ $secondaryFullName }}" loading="lazy" decoding="async" class="w-full h-full object-cover filter contrast-[1.05]">
                             @endif
                         </div>
                     </div>
@@ -1021,7 +1030,7 @@
                 @foreach($displayPhotos as $idx => $photo)
                     <div @click="openLightbox('{{ $photo }}')"
                          class="group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer shadow-md border-2 border-[#C5A059]/40 bg-[#FAF5EE] hover:scale-[1.02] transition-all duration-300">
-                        <img src="{{ $photo }}" alt="Foto Galeri {{ $idx + 1 }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="{{ $photo }}" alt="Foto Galeri {{ $idx + 1 }}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-[#3D0D17]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-3">
                             <span class="text-[10px] font-cinzel text-[#E8CF9B] uppercase tracking-widest">Lihat Foto</span>
                         </div>
@@ -1074,7 +1083,7 @@
                         <div class="space-y-1">
                             <span class="text-[9px] uppercase tracking-widest text-[#FAF5EE]/60 block">Nomor Rekening</span>
                             <div class="flex items-center justify-between gap-2">
-                                <span class="font-mono text-xl sm:text-2xl font-bold tracking-wider text-white">
+                                <span class="font-mono text-base sm:text-xl font-bold tracking-wider text-white break-all">
                                     {{ $gift['account_number'] ?? '0000 0000 00' }}
                                 </span>
                                 <button type="button"
@@ -1244,7 +1253,7 @@
          FLOATING BOTTOM NAVIGATION DOCK & MUSIC CONTROLLER
          ========================================================= --}}
     <div x-cloak x-show="isOpen"
-         class="fixed bottom-4 inset-x-0 mx-auto max-w-sm z-40 px-4">
+         class="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] inset-x-0 mx-auto w-[94%] max-w-sm z-40 px-2">
         <div class="px-3 py-2 rounded-full bg-[#2A070F]/90 border border-[#C5A059]/60 shadow-[0_10px_35px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center justify-between text-[#FAF5EE]">
             {{-- Quick Links --}}
             <a href="#section-top" class="p-2 rounded-full hover:bg-white/10 transition text-center" title="Sampul">
