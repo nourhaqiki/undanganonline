@@ -114,6 +114,30 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Kemegahan adat Minangkabau berlatar Rumah Gadang & Danau Singkarak, tenun songket marun emas, mahkota suntiang berayun lembut, guguran melati alami, dan alunan talempong pentatonis.',
                 'is_active' => true,
             ],
+            [
+                'name' => 'Cupid 3D Biru',
+                'slug' => 'cupid-3d-biru',
+                'category' => 'pernikahan',
+                'accent_color' => '#3B82F6',
+                'description' => 'Tema romantis 3D claymorphism bernuansa biru pastel tenang dengan animasi cupid memanah hati, intro merpati 3D, confetti, dan kotak musik lembut.',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Cupid 3D Pink',
+                'slug' => 'cupid-3d-pink',
+                'category' => 'pernikahan',
+                'accent_color' => '#E87A90',
+                'description' => 'Tema romantis 3D claymorphism bernuansa pink pastel manis dengan animasi cupid memanah hati kristal, confetti hati, dan kotak musik romantis.',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Midnight Velvet Union',
+                'slug' => 'midnight-velvet',
+                'category' => 'pernikahan',
+                'accent_color' => '#E5B299',
+                'description' => 'Tema pernikahan malam mewah bernuansa obsidian, crimson velvet, dan rose gold dengan intro sinematik 4K, tirai beludru terbelah, dan kelopak mawar melayang.',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($themes as $theme) {
